@@ -1,0 +1,70 @@
+% This is based on the LLNCS.DEM the demonstration file of
+% the LaTeX macro package from Springer-Verlag
+% for Lecture Notes in Computer Science,
+% version 2.4 for LaTeX2e as of 16. April 2010
+%
+% See http://www.springer.com/computer/lncs/lncs+authors?SGWID=0-40209-0-0-0
+% for the full guidelines.
+%
+
+\documentclass{llncs}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{hyperref}
+\usepackage{subfig}
+
+\begin{document}
+
+\title{Konwolucyjna sieć neuronowa grająca w Collect4}
+%
+\titlerunning{ConvCollect4}  % abbreviated title (for running head)
+%                                     also used for the TOC unless
+%                                     \toctitle is used
+%
+\author{Tomasz Janiszewski\inst{1} \and Jakub Dutkowski\inst{2}}
+%
+\authorrunning{Tomasz Janiszewski, Jakub Dutkowski} % abbreviated author list (for running head)
+%
+%%%% list of authors for the TOC (use if author list has to be modified)
+\tocauthor{Tomasz Janiszewski and Jakub Dutkowski}
+
+\institute{Politechnika Warszawska\\
+Wydział Matematyki i Nauk Informacyjnych
+\email{janiszewskit@student.mini.pw.edu.pl}~~
+\email{dutkowskij@student.mini.pw.edu.pl}}
+
+\maketitle              % typeset the title of the contribution
+
+\begin{abstract}
+\todo{dodać abstract}
+\keywords{Collect4, Convolutiona Neural Network, Deep learning}
+\end{abstract}
+%
+\section{Wstęp}
+\section{Opis sieci}
+\section{Cechy}
+\section{Algorytm uczenia i grania}
+
+
+%
+% ---- Bibliography ----
+%
+\begin{thebibliography}{4}
+%
+\bibitem {mandziuk2011}
+Mandziuk, J.:
+\textsl{Towards Cognitively Plausible Game Playing Systems}
+IEEE COMPUTATIONAL INTELLIGENCE MAGAZINE, Maj, 2011
+\bibitem {Ah-Hwee}
+Ah-Hwee Tan
+\textsl{FALCON: A Fusion Architecture for Learning, COgnition, and Navigation}
+\bibitem {webinar}
+Yann LeCun
+\textsl{Gtc Express Convolutional Networks Webinar}
+\url{http://on-demand.gputechconf.com/gtc/2014/webinar/gtc-express-convolutional-networks-webinar.mp4}
+\end{thebibliography}
+
+\end{document}
