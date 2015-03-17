@@ -11,8 +11,11 @@ all: specyfikacja_wstepna.pdf
 # # -interactive=nonstopmode keeps the pdflatex backend from stopping at a
 # # missing file reference and interactively asking you for an alternative.
 
-specyfikacja_wstepna.pdf: ./doc/specyfikacja_wstepna.tex
+specyfikacja_wstepna.pdf: ./doc/specyfikacja_wstepna.tex ./doc/img/opis_sieci.pdf
 	cd doc; latexmk -f -pdf -pdflatex="pdflatex -interactive=nonstopmode" -use-make specyfikacja_wstepna.tex
+
+doc/img/opis_sieci.pdf doc/img/opis_sieci.dot:
+	dot -Tpdf doc/img/opis_sieci.dot -o doc/img/opis_sieci.pdf
 
 clean:
 	cd doc; latexmk -CA

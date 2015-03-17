@@ -46,7 +46,7 @@ Celem projektu jest stworzenie rozwiązania znajdującego optymalny ruch (bądź
 Rozwiązanie zostanie zbudowane w oparciu o konwolucyjną sieć neuronową.
 
 \section{Reprezentacja planszy}
-Aby wykorzystać lokalność kontekstu gry, plansza do gry podzielona będzie na nachodzące na siebie sektory - kwadraty $4x4$ (jak na \autoref{fig:C4Podzial}). 
+Aby wykorzystać lokalność kontekstu gry, plansza do gry podzielona będzie na nachodzące na siebie sektory - kwadraty $4 \times 4$ (jak na \autoref{fig:C4Podzial}). 
 Każdy z kwadratów reprezentowany będzie jako wektor szesnastu liczb $\{-1, 0, 1\}$, gdzie:
 \begin{description}
 	\item[1] oznacza krążęk gracza aktywnego
@@ -54,7 +54,7 @@ Każdy z kwadratów reprezentowany będzie jako wektor szesnastu liczb $\{-1, 0,
 	\item[0] oznacza puste pole
 \end{description} 
 
-Wartości odpowiadające polom w sektorze ustawione będą kolejno jak na \autoref{fig:C4Kolejnosc}. 
+Wartości odpowiadające polom w sektorze ustawione będą kolejno jak na \autoref{fig:C4Kolejnosc}. Kolejne sektory będą numerowane kolumnami, od góry do dołu, od lewej do prawej.
 
 \begin{figure}
 	\centering	
@@ -70,11 +70,17 @@ Wartości odpowiadające polom w sektorze ustawione będą kolejno jak na \autor
 \end{figure}
 
 \section{Opis sieci}
-Wejście sieci będzie składało się z 9x16 neuronów - po jednym neuronie na każde z 16 pól w każdym z 9 sektorów. Części odpowiadające kolejnym sektorom będą miały związane odpowiednie wagi (np. waga odpowiadająca polu nr 1 w sektorze I będzie związana z wagą pola nr 1 w sektorze nr III). Kolejna warstwa składała się będzie z 4x9 neuronów - po jednym na każdą kolumnę każdego z sektorów
-\todo {dodaj jak połączyć te sektory - pionowo?}
-
-
+Wejście sieci będzie składało się z $16 \times 16$ neuronów - po jednym neuronie na każde z $16$ pól w każdym z $16$ sektorów. Części odpowiadające kolejnym sektorom będą miały związane odpowiednie wagi (np. waga odpowiadająca polu nr 1 w sektorze I będzie związana z wagą pola nr 1 w sektorze nr III). Kolejna warstwa składała się będzie z $4 \times 16$ neuronów - po jednym na każdą kolumnę każdego z sektorów.
+Wyjście tej warstwy będzie złożnoe z $4 \times 4$ neuronów, odpowiadającym kolumną planszy w każdej \emph{kolumnie sektorów}. Podobnie jak w przypadku 
+poprzednije warstwy, poszczególne elementy odpowiadające kolumną sektorów będą miały związane wagi.
 Wyjście sieci składało się będzie z siedmiu neuronów odpowiadającym kolumnom na planszy. Największa wartość oznacza numer kolumny w następnym ruchu.
+Wszystkie połączenia pomiędzy warstwami jak na \autoref{fig:Siec}
+
+\begin{figure}
+	\centering	
+	\includegraphics[width=0.5\textwidth]{img/opis_sieci.pdf}	\caption{Budowa sieci.}
+	\label{fig:Siec}
+\end{figure}
 
 \section{Algorytm uczenia i grania}
 Sieć będzie uczona za pomocą algorytmu propagacji wstecznej. Dane treningowe wygenerowane zostaną za pomocą programu Velena\cite{velena} wykonującego perfekcycjne ruchy.

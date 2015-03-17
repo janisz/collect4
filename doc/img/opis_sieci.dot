@@ -1,0 +1,74 @@
+ digraph graphname {
+ graph [rankdir=LR];
+  node [shape=record];
+
+  a [label="PLANSZA|{IN|7x7}|{OUT|16x16}"];
+
+  b1  [label="SEKTOR 1|{IN|16}|{OUT|4}"];
+  b2  [label="SEKTOR 2|{IN|16}|{OUT|4}"];
+  b3  [label="SEKTOR 3|{IN|16}|{OUT|4}"];
+  b4  [label="SEKTOR 4|{IN|16}|{OUT|4}"];
+  b5  [label="SEKTOR 5|{IN|16}|{OUT|4}"];
+  b6  [label="SEKTOR 6|{IN|16}|{OUT|4}"];
+  b7  [label="SEKTOR 7|{IN|16}|{OUT|4}"];
+  b8  [label="SEKTOR 8|{IN|16}|{OUT|4}"];
+  b9  [label="SEKTOR 9|{IN|16}|{OUT|4}"];
+  b10 [label="SEKTOR 10|{IN|16}|{OUT|4}"];
+  b11 [label="SEKTOR 11|{IN|16}|{OUT|4}"];
+  b12 [label="SEKTOR 12|{IN|16}|{OUT|4}"];
+  b13 [label="SEKTOR 13|{IN|16}|{OUT|4}"];
+  b14 [label="SEKTOR 14|{IN|16}|{OUT|4}"];
+  b15 [label="SEKTOR 15|{IN|16}|{OUT|4}"];
+  b16 [label="SEKTOR 16|{IN|16}|{OUT|4}"];
+
+
+
+  c1 [label="1 KOLUMNA SEKTORÓW|{IN|4x4}|{OUT|4}"];
+  c2 [label="2 KOLUMNA SEKTORÓW|{IN|4x4}|{OUT|4}"];
+  c3 [label="3 KOLUMNA SEKTORÓW|{IN|4x4}|{OUT|4}"];
+  c4 [label="4 KOLUMNA SEKTORÓW|{IN|4x4}|{OUT|4}"];
+
+  d [label="WYJŚCIE|{IN|4x7}|{OUT|7}"];
+
+  a -> b1;
+  a -> b2;
+  a -> b3;
+  a -> b4;
+  a -> b5;
+  a -> b6;
+  a -> b7;
+  a -> b8;
+  a -> b9;
+  a -> b10;
+  a -> b11;
+  a -> b12;
+  a -> b13;
+  a -> b14;
+  a -> b15;
+  a -> b16;
+
+  b1 -> c1;
+  b2 -> c1;
+  b3 -> c1;
+  b4 -> c1;
+
+  b5 -> c2;
+  b6 -> c2;
+  b7 -> c2;
+  b8 -> c2;
+
+  b9 -> c3;
+  b10 -> c3;
+  b11 -> c3;
+  b12 -> c3;
+
+  b13 -> c4;
+  b14 -> c4;
+  b15 -> c4;
+  b16 -> c4;
+
+  c1 -> d;
+  c2 -> d;
+  c3 -> d;
+  c4 -> d;
+ }
