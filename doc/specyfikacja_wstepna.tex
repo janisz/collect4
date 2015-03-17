@@ -18,9 +18,9 @@
 
 \begin{document}
 
-\title{Konwolucyjna sieć neuronowa grająca w Collect4}
+\title{Konwolucyjna sieć neuronowa grająca w Connect4}
 %
-\titlerunning{ConvCollect4}  % abbreviated title (for running head)
+\titlerunning{ConvConnect4}  % abbreviated title (for running head)
 %                                     also used for the TOC unless
 %                                     \toctitle is used
 %
@@ -38,14 +38,40 @@ Wydział Matematyki i Nauk Informacyjnych
 
 \maketitle              % typeset the title of the contribution
 
-\begin{abstract}
-\todo{dodać abstract}
-\keywords{Collect4, Convolutional Neural Network, Deep learning, cognitive approach,
+\keywords{Connect4, Convolutional Neural Network, Deep learning, cognitive approach,
 intuitive playing, human-like problem solving, example-based learning, Connect Four.}
-\end{abstract}
 %
 \section{Wstęp}
+Celem projektu jest stworzenie rozwiązania znajdującego optymalny ruch (bądź jego przybliżenie) w grze Connect Four (\emph{pol. Czwórki}) \cite{connect4:wiki} na podstawie obrazu planszy, bez przeszukiwania drzewa gry. 
+Rozwiązanie zostanie zbudowane w oparciu o konwolucyjną sieć neuronową.
+
+\section{Reprezentacja planszy}
+Aby wykorzystać lokalność kontekstu gry, plansza do gry podzielona będzie na nachodzące na siebie sektory - kwadraty $4x4$ (jak na \autoref{fig:C4Podzial}). 
+Każdy z kwadratów reprezentowany będzie jako wektor szesnastu liczb $\{-1, 0, 1\}$, gdzie:
+\begin{description}
+	\item[1] oznacza krążęk gracza aktywnego
+	\item[-1] oznacza krążek gracza nieaktywnego
+	\item[0] oznacza puste pole
+\end{description} 
+
+Wartości odpowiadające polom w sektorze ustawione będą kolejno jak na \autoref{fig:C4Kolejnosc}. 
+
+\begin{figure}
+	\centering	
+	\includegraphics[width=0.5\textwidth]{img/ConnectFour4x4.pdf}
+	\caption{Podział planszy na kwadraty 4x4. Dla czytelności, przedstawiono tylko pierwsze dwa wiersze.}
+	\label{fig:C4Podzial}
+\end{figure}
+
+\begin{figure}
+	\centering	
+	\includegraphics[width=0.5\textwidth]{img/ConnectFourOrder.pdf}	\caption{Kolejność pól w wektorze kodującym sektor planszy.}
+	\label{fig:C4Kolejnosc}
+\end{figure}
+
 \section{Opis sieci}
+Sieć będzie składała się 
+
 \section{Cechy}
 \section{Algorytm uczenia i grania}
 
@@ -66,6 +92,9 @@ Ah-Hwee Tan
 Yann LeCun
 \textsl{Gtc Express Convolutional Networks Webinar}
 \url{http://on-demand.gputechconf.com/gtc/2014/webinar/gtc-express-convolutional-networks-webinar.mp4}
+\bibitem {connect4:wiki}
+\textsl{Connect Four --- {W}ikipedia{,} The Free Encyclopedia}
+\url{http://en.wikipedia.org/wiki/Connect_Four}
 \end{thebibliography}
 
 \end{document}
