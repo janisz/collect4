@@ -70,11 +70,14 @@ Wartości odpowiadające polom w sektorze ustawione będą kolejno jak na \autor
 \end{figure}
 
 \section{Opis sieci}
-Sieć będzie składała się 
+Wejście sieci będzie składało się z 9x16 neuronów - po jednym neuronie na każde z 16 pól w każdym z 9 sektorów. Części odpowiadające kolejnym sektorom będą miały związane odpowiednie wagi (np. waga odpowiadająca polu nr 1 w sektorze I będzie związana z wagą pola nr 1 w sektorze nr III). Kolejna warstwa składała się będzie z 4x9 neuronów - po jednym na każdą kolumnę każdego z sektorów
+\todo {dodaj jak połączyć te sektory - pionowo?}
 
-\section{Cechy}
+
+Wyjście sieci składało się będzie z siedmiu neuronów odpowiadającym kolumnom na planszy. Największa wartość oznacza numer kolumny w następnym ruchu.
+
 \section{Algorytm uczenia i grania}
-
+Sieć będzie uczona za pomocą algorytmu propagacji wstecznej. Dane treningowe wygenerowane zostaną za pomocą programu Velena\cite{velena} wykonującego perfekcycjne ruchy.
 
 %
 % ---- Bibliography ----
@@ -95,6 +98,9 @@ Yann LeCun
 \bibitem {connect4:wiki}
 \textsl{Connect Four --- {W}ikipedia{,} The Free Encyclopedia}
 \url{http://en.wikipedia.org/wiki/Connect_Four}
+\bibitem {velena}
+\textsl{A Shannon C-type program which plays connect four perfectly}
+\url{http://www.ce.unipr.it/~gbe/velena.html}
 \end{thebibliography}
 
 \end{document}
