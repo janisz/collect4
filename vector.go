@@ -54,6 +54,7 @@ func (v *SimpleVector) Equals(x Vector) bool {
 }
 
 func (v *SimpleVector) NearlyEquals(x Vector, eps float64) bool {
+	eps = math.Abs(eps)
 	if v.Length() != x.Length() {
 		return false
 	}

@@ -68,7 +68,7 @@ func TestPerceptronBackpropagation(t *testing.T) {
 
 	//then:
 	actual := p.Compute(input)
-	if !actual.NearlyEquals(expected, -0.18205) {
+	if !actual.NearlyEquals(expected, 0.18205) {
 		t.Errorf("NOT Expected %s but got %s for %s", expected, actual, p)
 	}
 }
