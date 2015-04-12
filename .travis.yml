@@ -1,5 +1,6 @@
-language: rust
-before_install:
-- sudo apt-get -qq update
-- sudo apt-get -qq install latexmk texlive-latex-extra texlive-full
-script: "make"
+language: go
+
+go:
+ - 1.4.2
+ - tip
+ - 1.3.3
