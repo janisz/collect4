@@ -12,7 +12,7 @@ type Vector interface {
 	Mul(float64)
 	MulElements(Vector) error
 	Length() int
-	ElementAt(int) *float64
+	At(int) *float64
 	Apply(func(float64) float64)
 	String() string
 	Equals(x Vector) bool
@@ -44,7 +44,7 @@ func (v *SimpleVector) Equals(x Vector) bool {
 		return false
 	}
 	for i, lhs := range v.data {
-		rhs := *x.ElementAt(i)
+		rhs := *x.At(i)
 		if lhs != rhs {
 			return false
 
@@ -54,12 +54,11 @@ func (v *SimpleVector) Equals(x Vector) bool {
 }
 
 func (v *SimpleVector) NearlyEquals(x Vector, eps float64) bool {
-	eps = math.Abs(eps)
 	if v.Length() != x.Length() {
 		return false
 	}
 	for i, lhs := range v.data {
-		rhs := *x.ElementAt(i)
+		rhs := *x.At(i)
 		if !nearlyEqual(lhs, rhs, eps) {
 			return false
 
@@ -94,7 +93,7 @@ func (v *SimpleVector) MulElements(x Vector) error {
 		return errors.New("Size mismatch")
 	}
 	for i, _ := range v.data {
-		v.data[i] *= *x.ElementAt(i)
+		v.data[i] *= *x.At(i)
 	}
 	return nil
 }
@@ -104,7 +103,7 @@ func (v *SimpleVector) Add(x Vector) error {
 		return errors.New("Size mismatch")
 	}
 	for i, _ := range v.data {
-		v.data[i] += *x.ElementAt(i)
+		v.data[i] += *x.At(i)
 	}
 	return nil
 }
@@ -115,7 +114,7 @@ func (v *SimpleVector) Apply(transformation func(float64) float64) {
 	}
 }
 
-func (v *SimpleVector) ElementAt(position int) *float64 {
+func (v *SimpleVector) At(position int) *float64 {
 	return &v.data[position]
 }
 
@@ -127,19 +126,6 @@ func (v *SimpleVector) Raw() []float64 {
 	return v.data
 }
 
-//http://stackoverflow.com/a/4915891/1387612
 func nearlyEqual(a, b, epsilon float64) bool {
-	absA := math.Abs(a)
-	absB := math.Abs(b)
-	diff := math.Abs(a - b)
-
-	if a == b { // shortcut, handles infinities
-		return true
-	} else if a == 0 || b == 0 || diff < math.SmallestNonzeroFloat64 {
-		// a or b is zero or both are extremely close to it
-		// relative error is less meaningful here
-		return diff < (epsilon * math.SmallestNonzeroFloat64)
-	} else { // use relative error
-		return diff/(absA+absB) < epsilon
-	}
+	return math.Abs(a - b) <= math.Abs(epsilon)
 }

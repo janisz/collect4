@@ -104,7 +104,7 @@ func TestVectorNearlyEquals(t *testing.T) {
 	for _, c := range cases {
 		a := NewSimpleVector(c.a)
 		b := NewSimpleVector(c.b)
-		if !a.NearlyEquals(b, 0.01) {
+		if !a.NearlyEquals(b, 0.011) {
 			t.Errorf("%s %s are same", a, b)
 		}
 	}

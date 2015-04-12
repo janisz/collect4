@@ -2,56 +2,13 @@ package collect4
 
 import (
 	"fmt"
+	"math/rand"
 )
 
 type Perceptron struct {
 	inputCount  int
 	outputCount int
 	layers      []Layer
-}
-
-type Layer struct {
-	neurons []Neuron
-}
-
-func NewLayer(size int, input int) Layer {
-	neurons := make([]Neuron, size)
-	for i := range neurons {
-		neurons[i] = NewNeuron(input)
-	}
-	return Layer{neurons}
-}
-
-func (l *Layer) Size() int {
-	return len(l.neurons)
-}
-
-func (l *Layer) Compute(signal Vector) Vector {
-	output := make([]float64, l.Size())
-	for i, neuron := range l.neurons {
-		output[i] = neuron.Compute(signal)
-	}
-	o := NewSimpleVector(output)
-	o.Apply(activationFunction)
-	return o
-}
-
-type Neuron struct {
-	weights Vector
-	output, gradient, lastGradient float64
-}
-
-func NewNeuron(input int) Neuron {
-	return Neuron{
-		weights: NewSimpleVector(make([]float64, input)),
-	}
-}
-
-func (n *Neuron) Compute(signal Vector) float64 {
-	output := signal.Copy()
-	output.MulElements(n.weights)
-	n.output = output.Sum()
-	return n.output
 }
 
 func NewPerceptron(in int, out int, layers []int) *Perceptron {
@@ -88,4 +45,23 @@ func (p *Perceptron) Compute(input Vector) Vector {
 		signal = layer.Compute(signal)
 	}
 	return signal
+}
+
+func (p *Perceptron) Learn(coach Coach, iterations int) {
+	for i:=0; i<iterations; i++ {
+		coach.Iteration()
+	}
+}
+
+func (p *Perceptron) Initialize(seed int64) {
+	rand.Seed(seed)
+	for _, layer := range p.layers {
+		for i, neuron := range layer.neurons {
+			weights := make([]float64, neuron.weights.Length())
+			for i := range weights {
+				weights[i] = rand.Float64() - rand.Float64()
+			}
+			layer.neurons[i].weights = NewSimpleVector(weights)
+		}
+	}
 }
