@@ -1,7 +1,6 @@
 package collect4
 
 import (
-	"math"
 	"fmt"
 )
 
@@ -30,15 +29,16 @@ func (l *Layer) Size() int {
 func (l *Layer) Compute(signal Vector) Vector {
 	output := make([]float64, l.Size())
 	for i, neuron := range l.neurons {
-		output [i] = neuron.Compute(signal)
+		output[i] = neuron.Compute(signal)
 	}
 	o := NewSimpleVector(output)
-	o.Apply(math.Tanh)
+	o.Apply(activationFunction)
 	return o
 }
 
 type Neuron struct {
 	weights Vector
+	output, gradient, lastGradient float64
 }
 
 func NewNeuron(input int) Neuron {
@@ -50,7 +50,8 @@ func NewNeuron(input int) Neuron {
 func (n *Neuron) Compute(signal Vector) float64 {
 	output := signal.Copy()
 	output.MulElements(n.weights)
-	return output.Sum()
+	n.output = output.Sum()
+	return n.output
 }
 
 func NewPerceptron(in int, out int, layers []int) *Perceptron {
@@ -61,7 +62,7 @@ func NewPerceptron(in int, out int, layers []int) *Perceptron {
 	p.layers = make([]Layer, len(hiddenLayersWithOutput))
 	for i := range p.layers {
 		var input int
-		if (i == 0) {
+		if i == 0 {
 			input = in
 		} else {
 			input = hiddenLayersWithOutput[i-1]

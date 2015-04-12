@@ -76,3 +76,36 @@ func TestVectorEquals(t *testing.T) {
 		}
 	}
 }
+
+func TestVectorNotNearlyEquals(t *testing.T) {
+	cases := []struct {
+		a, b []float64
+	}{
+		{[]float64{1, 2}, []float64{1}},
+		{[]float64{1, 2}, []float64{1, 2.01}},
+		{[]float64{1, }, []float64{1, 2}},
+	}
+	for _, c := range cases {
+		a := NewSimpleVector(c.a)
+		b := NewSimpleVector(c.b)
+		if a.NearlyEquals(b, 0.001) {
+			t.Errorf("%s %s are NOT same", a, b)
+		}
+	}
+}
+
+func TestVectorNearlyEquals(t *testing.T) {
+	cases := []struct {
+		a, b []float64
+	}{
+		{[]float64{0.99, 2}, []float64{1, 2.01}},
+		{[]float64{}, []float64{}},
+	}
+	for _, c := range cases {
+		a := NewSimpleVector(c.a)
+		b := NewSimpleVector(c.b)
+		if !a.NearlyEquals(b, 0.01) {
+			t.Errorf("%s %s are same", a, b)
+		}
+	}
+}

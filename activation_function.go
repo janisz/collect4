@@ -2,21 +2,27 @@ package collect4
 
 import "math"
 
-//This type is function that will be applied to input in neuron
-//First output is value of the function, and the second is it's derivative
-//in givne point
-type ActivationFunction interface {
-	Value(float64) float64
-	Derivative(float64) float64
+type ActivationFunction func (float64) float64
+type ActivationFunctionʼ func (float64) float64
+
+
+var activationFunction ActivationFunction
+var activationFunctionʼ ActivationFunction
+
+func Sigmoid(x float64) float64 {
+	return 1/(1 + math.Exp(-x))
 }
 
-var SIGMOID ActivationFunction = &Sigmoid{}
-
-type Sigmoid struct{}
-
-func (s *Sigmoid) Value(input float64) float64 {
-	return math.Tanh(input)
+func Sigmoidʼ(x float64) float64 {
+	sigmoid := Sigmoid(x)
+	return sigmoid*(1-sigmoid)
 }
-func (s *Sigmoid) Derivative(input float64) float64 {
-	return 1 - math.Tanh(input)*math.Tanh(input)
+
+func Tanh(x float64) float64 {
+	return math.Tanh(x)
+}
+
+func Tanhʼ(x float64) float64 {
+	tanh := Tanh(x)
+	return 1 - tanh*tanh
 }

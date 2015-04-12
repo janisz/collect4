@@ -12,12 +12,13 @@ type Vector interface {
 	Mul(float64)
 	MulElements(Vector) error
 	Length() int
-	ElementAt(int) (float64, error)
+	ElementAt(int) *float64
 	Apply(func(float64) float64)
 	String() string
 	Equals(x Vector) bool
 	NearlyEquals(x Vector, eps float64) bool
 	Copy() Vector
+	Raw() []float64
 }
 
 type SimpleVector struct {
@@ -43,10 +44,7 @@ func (v *SimpleVector) Equals(x Vector) bool {
 		return false
 	}
 	for i, lhs := range v.data {
-		rhs, err := x.ElementAt(i)
-		if err != nil {
-			return false
-		}
+		rhs := *x.ElementAt(i)
 		if lhs != rhs {
 			return false
 
@@ -60,10 +58,7 @@ func (v *SimpleVector) NearlyEquals(x Vector, eps float64) bool {
 		return false
 	}
 	for i, lhs := range v.data {
-		rhs, err := x.ElementAt(i)
-		if err != nil {
-			return false
-		}
+		rhs := *x.ElementAt(i)
 		if !nearlyEqual(lhs, rhs, eps) {
 			return false
 
@@ -98,11 +93,7 @@ func (v *SimpleVector) MulElements(x Vector) error {
 		return errors.New("Size mismatch")
 	}
 	for i, _ := range v.data {
-		element, err := x.ElementAt(i)
-		if err != nil {
-			return errors.New("Size mismatch")
-		}
-		v.data[i] *= element
+		v.data[i] *= *x.ElementAt(i)
 	}
 	return nil
 }
@@ -112,11 +103,7 @@ func (v *SimpleVector) Add(x Vector) error {
 		return errors.New("Size mismatch")
 	}
 	for i, _ := range v.data {
-		element, err := x.ElementAt(i)
-		if err != nil {
-			return errors.New("Size mismatch")
-		}
-		v.data[i] += element
+		v.data[i] += *x.ElementAt(i)
 	}
 	return nil
 }
@@ -127,15 +114,16 @@ func (v *SimpleVector) Apply(transformation func(float64) float64) {
 	}
 }
 
-func (v *SimpleVector) ElementAt(position int) (float64, error) {
-	if position < 0 || position >= v.Length() {
-		return 0, errors.New("Argument out of bounds")
-	}
-	return v.data[position], nil
+func (v *SimpleVector) ElementAt(position int) *float64 {
+	return &v.data[position]
 }
 
 func (v *SimpleVector) Length() int {
 	return len(v.data)
+}
+
+func (v *SimpleVector) Raw() []float64 {
+	return v.data
 }
 
 //http://stackoverflow.com/a/4915891/1387612
