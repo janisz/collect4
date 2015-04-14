@@ -69,6 +69,7 @@ func TestPerceptronBackpropagation(t *testing.T) {
 
 	//when:
 	p.Learn(coach, 1)
+	log.Debug("Perceptron: %s", p)
 
 	//then:
 	actual = p.Compute(input)
@@ -81,7 +82,7 @@ func TestPerceptronBackpropagationXOR(t *testing.T) {
 	//given:
 	activationFunction = Sigmoid
 	activationFunctionʼ = Sigmoidʼ
-	p := NewPerceptron(2, 1, []int{3, 2})
+	p := NewPerceptron(2, 1, []int{3})
 	p.Initialize(54)
 
 	input := []Vector{
@@ -97,14 +98,14 @@ func TestPerceptronBackpropagationXOR(t *testing.T) {
 		NewSimpleVector([]float64{1}),
 	}
 
-	coach := NewBacpropagationCoach(p, input, expected, 5)
+	coach := NewBacpropagationCoach(p, input, expected, 0.0005)
 
 	//when:
 	p.Learn(coach, 1000)
 
 	//then:
 	for i, in := range input {
-		t.Logf("For %s got %s expected %s", in, p.Compute(in), expected[i])
+		log.Info("For %s got %s expected %s", in, p.Compute(in), expected[i])
 	}
 	if coach.Error() > 0.2 {
 		t.Errorf("Error is to big: %f", coach.Error())

@@ -3,20 +3,44 @@ package collect4
 import (
 	"fmt"
 	"math/rand"
+	"github.com/op/go-logging"
+	"os"
 )
 
 type Perceptron struct {
 	inputCount  int
 	outputCount int
-	layers      []Layer
+	layers      []*Layer
 }
 
+var log = logging.MustGetLogger("example")
+var format = logging.MustStringFormatter(
+"%{color}%{time:15:04:05.000} %{shortfunc} ▶ %{level:.4s} %{id:03x}%{color:reset} %{message}",
+)
+
 func NewPerceptron(in int, out int, layers []int) *Perceptron {
+
+	// For demo purposes, create two backend for os.Stderr.
+	backend1 := logging.NewLogBackend(os.Stderr, "", 0)
+	backend2 := logging.NewLogBackend(os.Stderr, "", 0)
+
+	// For messages written to backend2 we want to add some additional
+	// information to the output, including the used log level and the name of
+	// the function.
+	backend2Formatter := logging.NewBackendFormatter(backend2, format)
+
+	// Only errors and more severe messages should be sent to backend1
+	backend1Leveled := logging.AddModuleLevel(backend1)
+	backend1Leveled.SetLevel(logging.ERROR, "")
+
+	// Set the backends to be used.
+	logging.SetBackend(backend1Leveled, backend2Formatter)
+
 	p := &Perceptron{}
 	p.inputCount = in
 	p.outputCount = out
 	hiddenLayersWithOutput := append(append([]int(nil), layers...), out)
-	p.layers = make([]Layer, len(hiddenLayersWithOutput))
+	p.layers = make([]*Layer, len(hiddenLayersWithOutput))
 	for i := range p.layers {
 		var input int
 		if i == 0 {
@@ -35,14 +59,19 @@ func (p *Perceptron) String() string {
 	for _, layer := range p.layers {
 		s += fmt.Sprintf("%d->", layer.Size())
 	}
-	s += "OUT"
+	s += "OUT\n"
+	for _, layer := range p.layers {
+		s += layer.String() + "\n"
+	}
 	return s
 }
 
 func (p *Perceptron) Compute(input Vector) Vector {
+	log.Info("Computing...")
 	signal := input
-	for _, layer := range p.layers {
+	for i, layer := range p.layers {
 		signal = layer.Compute(signal)
+		log.Debug("Layer %d output = %f", i, signal)
 	}
 	return signal
 }

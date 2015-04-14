@@ -1,15 +1,15 @@
 package collect4
 
 type Layer struct {
-	neurons []Neuron
+	neurons []*Neuron
 }
 
-func NewLayer(size int, input int) Layer {
-	neurons := make([]Neuron, size)
+func NewLayer(size int, input int) *Layer {
+	neurons := make([]*Neuron, size)
 	for i := range neurons {
 		neurons[i] = NewNeuron(input)
 	}
-	return Layer{neurons}
+	return &Layer{neurons}
 }
 
 func (l *Layer) Size() int {
@@ -24,4 +24,13 @@ func (l *Layer) Compute(signal Vector) Vector {
 	o := NewSimpleVector(output)
 	o.Apply(activationFunction)
 	return o
+}
+
+func (l *Layer) String() string {
+	s := ""
+
+	for _, neuron := range l.neurons {
+		s += neuron.String() + "\n"
+	}
+	return s
 }
