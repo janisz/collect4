@@ -40,9 +40,10 @@ func NewBacpropagationCoach(perceptron *Perceptron, input, prediction []Vector, 
 		updates: updates,
 	}
 }
-
+var bias bool
 func (b BackPropagationCoach) Iteration() {
 	for caseIndex, in := range b.input {
+		log.Debug("Input: %s", in)
 		prediction := b.prediction[caseIndex]
 		outputs := b.perceptron.ComputeVerbose(in)
 
@@ -61,8 +62,7 @@ func (b BackPropagationCoach) Iteration() {
 				} else {
 					nextLayerIndex := layerIndex + 1
 					nextLayer := b.perceptron.layers[nextLayerIndex]
-					deltas := b.deltas[nextLayerIndex]
-					for i, delta := range deltas {
+					for i, delta := range b.deltas[nextLayerIndex] {
 						error += delta * *nextLayer.neurons[i].weights.At(neuronIndex)
 					}
 				}
@@ -86,6 +86,9 @@ func (b BackPropagationCoach) Iteration() {
 					*(neuron.weights.At(i)) += update
 					b.updates[layerIndex+1][neuronIndex][i] = update
 				}
+				if bias {
+					neuron.bias += b.learnigRate * delta
+				}
 			}
 		}
 	}
@@ -93,21 +96,11 @@ func (b BackPropagationCoach) Iteration() {
 
 
 func (b BackPropagationCoach) Error() float64 {
-	ESS := NewZeroVector(b.prediction[0].Length());
-	for i, in := range b.input {
-		e := b.LocalError(in, b.prediction[i])
-		e.Apply(func (x float64) float64 {
-			return x*x
-		})
-		ESS.Add(e)
+	// mean squared error
+	sum := 0.0;
+	outputError := b.errors[len(b.errors)-1]
+	for _, error := range outputError {
+		sum += error * error
 	}
-	return ESS.Sum() / float64(ESS.Length())
-}
-
-func (b BackPropagationCoach) LocalError(in Vector, ideal Vector) Vector {
-	output := b.perceptron.Compute(in)
-	log.Debug("Perceptron Output for %s = %f", in, output)
-	output.Mul(-1)
-	output.Add(ideal)
-	return output
+	return (sum / float64(len(b.errors)));
 }

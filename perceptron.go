@@ -3,8 +3,6 @@ package collect4
 import (
 	"fmt"
 	"math/rand"
-	"github.com/op/go-logging"
-	"os"
 )
 
 type Perceptron struct {
@@ -13,30 +11,8 @@ type Perceptron struct {
 	layers      []*Layer
 }
 
-var log = logging.MustGetLogger("example")
-var format = logging.MustStringFormatter(
-"%{color}%{time:15:04:05.000} %{shortfunc} ▶ %{level:.4s} %{id:03x}%{color:reset} %{message}",
-)
-
 func NewPerceptron(in int, out int, layers []int) *Perceptron {
-
-	// For demo purposes, create two backend for os.Stderr.
-	backend1 := logging.NewLogBackend(os.Stderr, "", 0)
-	backend2 := logging.NewLogBackend(os.Stderr, "", 0)
-
-	// For messages written to backend2 we want to add some additional
-	// information to the output, including the used log level and the name of
-	// the function.
-	backend2Formatter := logging.NewBackendFormatter(backend2, format)
-
-	// Only errors and more severe messages should be sent to backend1
-	backend1Leveled := logging.AddModuleLevel(backend1)
-	backend1Leveled.SetLevel(logging.ERROR, "")
-
-	// Set the backends to be used.
-	logging.SetBackend(backend1Leveled, backend2Formatter)
-
-	p := &Perceptron{}
+		p := &Perceptron{}
 	p.inputCount = in
 	p.outputCount = out
 	hiddenLayersWithOutput := append(append([]int(nil), layers...), out)
@@ -72,7 +48,7 @@ func (p *Perceptron) Compute(input Vector) Vector {
 
 func (p *Perceptron) ComputeVerbose(input Vector) []Vector {
 	outputs := make([]Vector, len(p.layers) )
-	log.Info("Computing...")
+	log.Debug("Computing...")
 	signal := input
 	for i, layer := range p.layers {
 		signal = layer.Compute(signal)
@@ -83,21 +59,27 @@ func (p *Perceptron) ComputeVerbose(input Vector) []Vector {
 }
 
 
-func (p *Perceptron) Learn(coach Coach, iterations int) {
+func (p *Perceptron) Learn(coach Coach, maxError float64, iterations int) {
 	for i:=0; i<iterations; i++ {
 		coach.Iteration()
+		error := coach.Error()
+		log.Debug("Error %f", error)
+		if (error < maxError) {
+			log.Info("Stop training after %d with error %f < %f",  i, error, maxError)
+			break
+		}
 	}
+	log.Info("Training finished")
 }
 
 func (p *Perceptron) Initialize(seed int64) {
 	rand.Seed(seed)
 	for _, layer := range p.layers {
-		for i, neuron := range layer.neurons {
-			weights := make([]float64, neuron.weights.Length())
-			for i := range weights {
-				weights[i] = rand.Float64() - rand.Float64()
-			}
-			layer.neurons[i].weights = NewSimpleVector(weights)
+		for _, neuron := range layer.neurons {
+			neuron.weights = NewZeroVector(neuron.weights.Length())
+			neuron.weights.Apply(func (x float64) float64 {
+				return rand.Float64() - 0.5
+			})
 		}
 	}
 }

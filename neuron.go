@@ -3,6 +3,7 @@ import "fmt"
 
 type Neuron struct {
 	weights Vector
+	bias float64
 }
 
 func NewNeuron(input int) *Neuron {
@@ -14,9 +15,9 @@ func NewNeuron(input int) *Neuron {
 func (n *Neuron) Compute(signal Vector) float64 {
 	output := signal.Copy()
 	output.MulElements(n.weights)
-	return output.Sum()
+	return output.Sum() + n.bias
 }
 
 func (n *Neuron) String() string {
-	return fmt.Sprintf("weights: %s", n.weights)
+	return fmt.Sprintf("weights: %s (%f)", n.weights, n.bias)
 }
