@@ -67,14 +67,21 @@ func (p *Perceptron) String() string {
 }
 
 func (p *Perceptron) Compute(input Vector) Vector {
+	return p.ComputeVerbose(input)[len(p.layers)-1]
+}
+
+func (p *Perceptron) ComputeVerbose(input Vector) []Vector {
+	outputs := make([]Vector, len(p.layers) )
 	log.Info("Computing...")
 	signal := input
 	for i, layer := range p.layers {
 		signal = layer.Compute(signal)
+		outputs[i] = signal
 		log.Debug("Layer %d output = %f", i, signal)
 	}
-	return signal
+	return outputs
 }
+
 
 func (p *Perceptron) Learn(coach Coach, iterations int) {
 	for i:=0; i<iterations; i++ {
