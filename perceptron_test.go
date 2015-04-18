@@ -60,10 +60,10 @@ func TestPerceptronBackpropagation(t *testing.T) {
 	input := NewSimpleVector([]float64{0.35, 0.9})
 	expected := NewSimpleVector([]float64{0.5})
 
-	coach := NewBacpropagationCoach(p, []Vector{input}, []Vector{expected}, 1)
+	coach := NewBacpropagationCoach(p, []Vector{input}, []Vector{expected}, 1, 0)
 
 	actual := p.Compute(input)
-	if actual.NearlyEquals(expected, 0.18205) {
+	if actual.NearlyEquals(expected, 0.182051) {
 		t.Errorf("Expected %s got %s for %s", expected, actual, p)
 	}
 
@@ -82,8 +82,8 @@ func TestPerceptronBackpropagationXOR(t *testing.T) {
 	//given:
 	activationFunction = Sigmoid
 	activationFunctionʼ = Sigmoidʼ
-	p := NewPerceptron(2, 1, []int{3})
-	p.Initialize(54)
+	p := NewPerceptron(2, 1, []int{3, 2})
+	p.Initialize(1024)
 
 	input := []Vector{
 		NewSimpleVector([]float64{0, 0}),
@@ -98,15 +98,49 @@ func TestPerceptronBackpropagationXOR(t *testing.T) {
 		NewSimpleVector([]float64{1}),
 	}
 
-	coach := NewBacpropagationCoach(p, input, expected, 0.0005)
+	coach := NewBacpropagationCoach(p, input, expected, 0.7, 0.3)
 
 	//when:
-	p.Learn(coach, 1000)
-
+	p.Learn(coach, 100)
+	log.Info("Perceptron %s", p)
 	//then:
 	for i, in := range input {
 		log.Info("For %s got %s expected %s", in, p.Compute(in), expected[i])
 	}
+	if coach.Error() > 0.2 {
+		t.Errorf("Error is to big: %f", coach.Error())
+	}
+}
+
+func TestPerceptronBackpropagationAND(t *testing.T) {
+	//given:
+	activationFunction = Sigmoid
+	activationFunctionʼ = Sigmoidʼ
+	p := NewPerceptron(2, 1, []int{2})
+	p.Initialize(1024)
+
+	input := []Vector{
+		NewSimpleVector([]float64{0, 0}),
+		NewSimpleVector([]float64{0, 1}),
+		NewSimpleVector([]float64{1, 1}),
+		NewSimpleVector([]float64{1, 0}),
+	}
+	expected := []Vector{
+		NewSimpleVector([]float64{0}),
+		NewSimpleVector([]float64{0}),
+		NewSimpleVector([]float64{1}),
+		NewSimpleVector([]float64{0}),
+	}
+
+	coach := NewBacpropagationCoach(p, input, expected, 0.3, 0.7)
+
+	//when:
+	p.Learn(coach, 100)
+	//then:
+	for i, in := range input {
+		log.Info("For %s got %s expected %s", in, p.Compute(in), expected[i])
+	}
+	log.Info("Perceptron %s", p)
 	if coach.Error() > 0.2 {
 		t.Errorf("Error is to big: %f", coach.Error())
 	}

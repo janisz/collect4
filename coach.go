@@ -9,27 +9,35 @@ type BackPropagationCoach struct {
 	perceptron *Perceptron
 	input []Vector
 	prediction []Vector
-	deltas []Vector
-	errors []Vector
-	learnigRate float64
+	deltas [][]float64
+	errors [][]float64
+	updates [][][]float64
+	learnigRate, momentum float64
 }
 
-func NewBacpropagationCoach(perceptron *Perceptron, input, prediction []Vector, leariningRate float64) Coach {
+func NewBacpropagationCoach(perceptron *Perceptron, input, prediction []Vector, leariningRate, momentum float64) Coach {
 	layersCount := len(perceptron.layers)
-	deltas := make([]Vector, layersCount)
-	errors := make([]Vector, layersCount)
+	deltas := make([][]float64, layersCount)
+	errors := make([][]float64, layersCount)
+	updates := make([][][]float64, layersCount)
 	for i := range deltas {
 		layerSize := perceptron.layers[i].Size()
-		deltas[i] = NewZeroVector(layerSize)
-		errors[i] = NewZeroVector(layerSize)
+		deltas[i] = make([]float64, layerSize)
+		errors[i] = make([]float64, layerSize)
+		updates[i] = make([][]float64, layerSize)
+		for j := range updates[i] {
+			updates[i][j] = make([]float64, perceptron.layers[i].neurons[0].weights.Length())
+		}
 	}
 	return BackPropagationCoach{
 		perceptron: perceptron,
 		input: input,
 		prediction: prediction,
 		learnigRate: leariningRate,
+		momentum: momentum,
 		deltas: deltas,
 		errors: errors,
+		updates: updates,
 	}
 }
 
@@ -53,13 +61,13 @@ func (b BackPropagationCoach) Iteration() {
 				} else {
 					nextLayerIndex := layerIndex + 1
 					nextLayer := b.perceptron.layers[nextLayerIndex]
-					deltas := b.deltas[nextLayerIndex].Copy()
-					for i, delta := range deltas.Raw() {
+					deltas := b.deltas[nextLayerIndex]
+					for i, delta := range deltas {
 						error += delta * *nextLayer.neurons[i].weights.At(neuronIndex)
 					}
 				}
-				*(b.errors[layerIndex].At(neuronIndex)) = error
-				*(b.deltas[layerIndex].At(neuronIndex)) = error * activationFunctionʼ(neuronOutput)
+				b.errors[layerIndex][neuronIndex] = error
+				b.deltas[layerIndex][neuronIndex] = error * activationFunctionʼ(neuronOutput)
 				log.Debug("Layer %d Neuron %d error %f ", layerIndex, neuronIndex, error)
 			}
 			log.Debug("Layer %d deltas %s", layerIndex, b.deltas[layerIndex])
@@ -69,11 +77,14 @@ func (b BackPropagationCoach) Iteration() {
 		for layerIndex, layer := range b.perceptron.layers[1:layersCount] {
 			layerInput := outputs[layerIndex]
 			for neuronIndex, neuron := range layer.neurons {
-				delta := *(b.deltas[layerIndex+1].At(neuronIndex))
+				delta := b.deltas[layerIndex+1][neuronIndex]
 				for i, inputElement := range layerInput.Raw() {
-					change := (b.learnigRate * delta * inputElement)
-					log.Debug("Change = %f * %f * %f = %f", b.learnigRate, delta, inputElement, change)
-					*(neuron.weights.At(i)) += change
+					update := b.updates[layerIndex+1][neuronIndex][i]
+					log.Debug("Change = %f * %f * %f + %f * %f", b.learnigRate, delta, inputElement, b.momentum, update)
+					update = b.learnigRate * delta * inputElement + b.momentum * update
+					log.Debug("Change = %f", update)
+					*(neuron.weights.At(i)) += update
+					b.updates[layerIndex+1][neuronIndex][i] = update
 				}
 			}
 		}
