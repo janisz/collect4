@@ -12,10 +12,10 @@ type BackPropagationCoach struct {
 	deltas [][]float64
 	errors [][]float64
 	updates [][][]float64
-	learnigRate, momentum float64
+	learningRate, momentum float64
 }
 
-func NewBacpropagationCoach(perceptron *Perceptron, input, prediction []Vector, leariningRate, momentum float64) Coach {
+func NewBackpropagationCoach(perceptron *Perceptron, input, prediction []Vector, learningRate, momentum float64) Coach {
 	layersCount := len(perceptron.layers)
 	deltas := make([][]float64, layersCount)
 	errors := make([][]float64, layersCount)
@@ -33,7 +33,7 @@ func NewBacpropagationCoach(perceptron *Perceptron, input, prediction []Vector, 
 		perceptron: perceptron,
 		input: input,
 		prediction: prediction,
-		learnigRate: leariningRate,
+		learningRate: learningRate,
 		momentum: momentum,
 		deltas: deltas,
 		errors: errors,
@@ -80,14 +80,14 @@ func (b BackPropagationCoach) Iteration() {
 				delta := b.deltas[layerIndex+1][neuronIndex]
 				for i, inputElement := range layerInput.Raw() {
 					update := b.updates[layerIndex+1][neuronIndex][i]
-					log.Debug("Change = %f * %f * %f + %f * %f", b.learnigRate, delta, inputElement, b.momentum, update)
-					update = b.learnigRate * delta * inputElement + b.momentum * update
+					log.Debug("Change = %f * %f * %f + %f * %f", b.learningRate, delta, inputElement, b.momentum, update)
+					update = b.learningRate * delta * inputElement + b.momentum * update
 					log.Debug("Change = %f", update)
 					*(neuron.weights.At(i)) += update
 					b.updates[layerIndex+1][neuronIndex][i] = update
 				}
 				if bias {
-					neuron.bias += b.learnigRate * delta
+					neuron.bias += b.learningRate * delta
 				}
 			}
 		}

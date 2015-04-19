@@ -67,7 +67,7 @@ func TestPerceptronBackpropagation(t *testing.T) {
 	input := NewSimpleVector([]float64{0.35, 0.9})
 	expected := NewSimpleVector([]float64{0.5})
 
-	coach := NewBacpropagationCoach(p, []Vector{input}, []Vector{expected}, 1, 0)
+	coach := NewBackpropagationCoach(p, []Vector{input}, []Vector{expected}, 1, 0)
 
 	actual := p.Compute(input)
 	if actual.NearlyEquals(expected, 0.182051) {
@@ -107,7 +107,7 @@ func TestPerceptronBackpropagationXOR(t *testing.T) {
 		NewSimpleVector([]float64{1}),
 	}
 
-	coach := NewBacpropagationCoach(p, input, expected, 0.7, 0.3)
+	coach := NewBackpropagationCoach(p, input, expected, 0.7, 0.3)
 
 	//when:
 	p.Learn(coach, 0.001, 5000)
@@ -146,7 +146,7 @@ func TestPerceptronBackpropagationAND(t *testing.T) {
 		NewSimpleVector([]float64{0}),
 	}
 
-	coach := NewBacpropagationCoach(p, input, expected, 0.9, 0.9)
+	coach := NewBackpropagationCoach(p, input, expected, 0.9, 0.9)
 
 	//when:
 	p.Learn(coach, 0.001, 50000)
