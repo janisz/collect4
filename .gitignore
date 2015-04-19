@@ -6,6 +6,7 @@
 *.fls
 *.out
 *.toc
+*.tex.bak
 
 ## Intermediate documents:
 *.dvi
@@ -107,3 +108,7 @@ sympy-plots-for-*.tex/
 
 # xindy
 *.xdy
+
+# idea
+.idea/
+*.iml
