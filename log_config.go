@@ -1,4 +1,4 @@
-package collect4
+package connect4
 import (
 	"github.com/op/go-logging"
 	"os"

@@ -1,4 +1,4 @@
-package collect4
+package connect4
 
 type Layer struct {
 	neurons []*Neuron
