@@ -3,6 +3,7 @@ package connect4
 import (
 	"testing"
 	"fmt"
+	"math"
 )
 
 func TestPerceptron(t *testing.T) {
@@ -85,6 +86,60 @@ func TestPerceptronBackpropagation(t *testing.T) {
 	}
 }
 
+func TestPerceptronBackpropagation2(t *testing.T) {
+	ConfigureDebugLogging()
+	//given:
+	activationFunction = Sigmoid
+	activationFunctionʼ = Sigmoidʼ
+	bias = true
+	p := NewPerceptron(2, 2, []int{3})
+
+	p.layers[0].neurons[0].bias = 0.1
+	p.layers[0].neurons[1].bias = 0.2
+	p.layers[0].neurons[2].bias = 0.5
+	p.layers[1].neurons[0].bias = -0.1
+	p.layers[1].neurons[1].bias = 0.6
+
+	log.Debug("p %s", p)
+	p.layers[0].neurons[0].weights = NewSimpleVector([]float64{0.1, -0.2})
+	p.layers[0].neurons[1].weights = NewSimpleVector([]float64{0.0, 0.2})
+	p.layers[0].neurons[2].weights = NewSimpleVector([]float64{0.3, -0.4})
+	p.layers[1].neurons[0].weights = NewSimpleVector([]float64{-0.4, 0.1, 0.6})
+	p.layers[1].neurons[1].weights = NewSimpleVector([]float64{0.2, -0.1, -0.2})
+
+	input := NewSimpleVector([]float64{0.6, 0.1})
+	expected := NewSimpleVector([]float64{0.53, 0.62})
+	ideal := NewSimpleVector([]float64{1, 0.0})
+
+	coach := NewBackpropagationCoach(p, []Vector{input}, []Vector{ideal}, 0.1, 0)
+
+	actual := p.Compute(input)
+	if actual.NearlyEquals(expected, 0.005) {
+		t.Errorf("Expected %s got %s for %s", expected, actual, p)
+	}
+
+	//when:
+	p.Learn(coach, 0, 1)
+	log.Debug("Perceptron: %s", p)
+
+	w36expected := -0.394
+	w36actual := *p.layers[1].neurons[0].weights.At(0)
+	w37expected := 0.192
+	w37actual := *p.layers[1].neurons[1].weights.At(0)
+	if !compareFloat(w36expected, w36actual, 0.005) {
+		t.Errorf("Expected %f but got %f for %s", w36expected, w36actual, p)
+	}
+	if !compareFloat(w37expected, w37actual, 0.005) {
+		t.Errorf("Expected %f but got %f for %s", w37expected, w37actual, p)
+	}
+
+	w13expected := 0.0989
+	w13actual := *p.layers[0].neurons[0].weights.At(0)
+	if !compareFloat(w13expected, w13actual, 0.005) {
+		t.Errorf("Expected %f but got %f for %s", w13expected, w13actual, p)
+	}
+}
+
 func TestPerceptronBackpropagationXOR(t *testing.T) {
 	ConfigureInfoLogging()
 	//given:
@@ -161,4 +216,9 @@ func TestPerceptronBackpropagationAND(t *testing.T) {
 		resultsSummary += fmt.Sprintf("%s\t|\t%s\t|\t%s\n", in, p.Compute(in), expected[i])
 	}
 	log.Info(resultsSummary)
+}
+
+
+func compareFloat(expected float64, actual float64, eps float64) bool{
+	return math.Abs(expected - actual) < eps
 }
