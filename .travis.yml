@@ -1,8 +1,5 @@
 language: go
 
-install:
- - go get github.com/op/go-logging
-
 go:
  - 1.4.2
  - tip
