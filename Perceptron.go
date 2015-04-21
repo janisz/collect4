@@ -1,27 +1,28 @@
 package connect4
+
 import (
 	"math"
 	"math/rand"
 )
 
 type Perceptron struct {
-	bias bool
-	sizes []int
-	thresholds [][]float64
-	outputs [][]float64
-	errors [][]float64
-	deltas [][]float64
-	weights [][][]float64
-	changes [][][]float64
-	activationFunction func(float64) float64
+	bias                         bool
+	sizes                        []int
+	thresholds                   [][]float64
+	outputs                      [][]float64
+	errors                       [][]float64
+	deltas                       [][]float64
+	weights                      [][][]float64
+	changes                      [][][]float64
+	activationFunction           func(float64) float64
 	activationFunctionDerivative func(float64) float64
 }
 
 func NewPerceptron(sizes []int, bias bool, activationFunction, activationFunctionDerivative func(float64) float64) Perceptron {
 	return Perceptron{
-		bias: bias,
-		sizes: sizes,
-		activationFunction: activationFunction,
+		bias:                         bias,
+		sizes:                        sizes,
+		activationFunction:           activationFunction,
 		activationFunctionDerivative: activationFunctionDerivative,
 	}
 }
@@ -33,9 +34,9 @@ func (p *Perceptron) Initialize() {
 	p.weights = make([][][]float64, len(p.sizes))
 	p.changes = make([][][]float64, len(p.sizes))
 
-	p.thresholds =  make([][]float64, len(p.sizes))
-	p.outputs =  make([][]float64, len(p.sizes))
-	p.errors =  make([][]float64, len(p.sizes))
+	p.thresholds = make([][]float64, len(p.sizes))
+	p.outputs = make([][]float64, len(p.sizes))
+	p.errors = make([][]float64, len(p.sizes))
 	p.deltas = make([][]float64, len(p.sizes))
 
 	for i := range p.weights {
@@ -49,7 +50,7 @@ func (p *Perceptron) Initialize() {
 		p.changes[i] = make([][]float64, p.sizes[i])
 
 		for j := 0; j < p.sizes[i]; j++ {
-			if (i == 0) {
+			if i == 0 {
 				p.weights[i][j] = randoms(0)
 				p.changes[i][j] = make([]float64, 0)
 			} else {
@@ -65,13 +66,12 @@ func (p *Perceptron) outputLayer() int {
 	return len(p.sizes) - 1
 }
 
-
 func (p *Perceptron) Compute(input []float64) []float64 {
 	p.outputs[0] = input
 	for layer := 1; layer <= p.outputLayer(); layer++ {
 		for neuron := 0; neuron < p.sizes[layer]; neuron++ {
-			neuronWeights := p.weights[layer][neuron];
-			sum := 0.0;
+			neuronWeights := p.weights[layer][neuron]
+			sum := 0.0
 			if p.bias {
 				sum += p.thresholds[layer][neuron]
 			}
@@ -110,12 +110,12 @@ func (p *Perceptron) computeDeltas(ideal []float64) {
 		for neuron := 0; neuron < p.sizes[layer]; neuron++ {
 			output := p.outputs[layer][neuron]
 			error := 0.0
-			if (layer == p.outputLayer()) {
+			if layer == p.outputLayer() {
 				error = ideal[neuron] - output
 			} else {
-				deltas := p.deltas[layer + 1]
+				deltas := p.deltas[layer+1]
 				for i, delta := range deltas {
-					error += delta * p.weights[layer + 1][i][neuron]
+					error += delta * p.weights[layer+1][i][neuron]
 				}
 			}
 			p.errors[layer][neuron] = error
@@ -126,7 +126,7 @@ func (p *Perceptron) computeDeltas(ideal []float64) {
 
 func (p *Perceptron) updateWeights(learningRate float64, momentum float64) {
 	for layer := 1; layer <= p.outputLayer(); layer++ {
-		incoming := p.outputs[layer - 1]
+		incoming := p.outputs[layer-1]
 
 		for neuron := 0; neuron < p.sizes[layer]; neuron++ {
 			delta := p.deltas[layer][neuron]
@@ -134,7 +134,7 @@ func (p *Perceptron) updateWeights(learningRate float64, momentum float64) {
 			for previousLayerNeuron := range incoming {
 				change := p.changes[layer][neuron][previousLayerNeuron]
 
-				change = learningRate * delta * incoming[previousLayerNeuron] + momentum * change
+				change = learningRate*delta*incoming[previousLayerNeuron] + momentum*change
 
 				p.changes[layer][neuron][previousLayerNeuron] = change
 				p.weights[layer][neuron][previousLayerNeuron] += change
@@ -147,11 +147,11 @@ func (p *Perceptron) updateWeights(learningRate float64, momentum float64) {
 }
 
 func sigmoid(x float64) float64 {
-	return 1 / (1 + math.Exp(-x));
+	return 1 / (1 + math.Exp(-x))
 }
 
 func sigmoidDerivative(x float64) float64 {
-	return (1 - x) * x;
+	return (1 - x) * x
 }
 
 func randoms(size int) []float64 {

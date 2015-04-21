@@ -1,8 +1,8 @@
 package connect4
 
 import (
-	"testing"
 	"math"
+	"testing"
 )
 
 func TestPerceptron(t *testing.T) {
@@ -39,7 +39,7 @@ func TestPerceptronOnXOR(t *testing.T) {
 		actual := p.Compute(in)
 		for j, actual_element := range actual {
 			if !compareFloat(ideal[i][j], actual_element, 0.05) {
-				t.Errorf("Expected %s but got %s", ideal[i], actual)
+				t.Errorf("Expected %v but got %v", ideal[i], actual)
 			}
 		}
 	}
@@ -54,7 +54,7 @@ func TestPerceptronOnXOR(t *testing.T) {
 		actual := p.Compute(in)
 		for j, actual_element := range actual {
 			if !compareFloat(ideal[i][j], actual_element, 0.05) {
-				t.Errorf("Expected %s but got %s", ideal[i], actual)
+				t.Errorf("Expected %v but got %v", ideal[i], actual)
 			}
 		}
 	}
@@ -68,9 +68,9 @@ func BenchmarkLearn(b *testing.B) {
 	p := NewPerceptron([]int{16, 12, 8, 4}, true, sigmoid, sigmoidDerivative)
 	p.Initialize()
 	b.ResetTimer()
-	p.Learn([][]float64{randoms(16)}, [][]float64{randoms(4)}, 0.7, 0.3, b.N, 0);
+	p.Learn([][]float64{randoms(16)}, [][]float64{randoms(4)}, 0.7, 0.3, b.N, 0)
 }
 
 func compareFloat(expected float64, actual float64, eps float64) bool {
-	return math.Abs(expected - actual) < eps
+	return math.Abs(expected-actual) < eps
 }
