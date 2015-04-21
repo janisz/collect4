@@ -126,16 +126,19 @@ func TestPerceptronBackpropagation2(t *testing.T) {
 	w36actual := *p.layers[1].neurons[0].weights.At(0)
 	w37expected := 0.192
 	w37actual := *p.layers[1].neurons[1].weights.At(0)
+	log.Debug("weight 36 %f, %f", w36expected, w36actual)
 	if !compareFloat(w36expected, w36actual, 0.005) {
 		t.Errorf("Expected %f but got %f for %s", w36expected, w36actual, p)
 	}
+	log.Debug("weight 37 %f, %f", w37expected, w37actual)
 	if !compareFloat(w37expected, w37actual, 0.005) {
 		t.Errorf("Expected %f but got %f for %s", w37expected, w37actual, p)
 	}
 
 	w13expected := 0.0989
 	w13actual := *p.layers[0].neurons[0].weights.At(0)
-	if !compareFloat(w13expected, w13actual, 0.005) {
+	log.Debug("weight 13 %f, %f", w13expected, w13actual)
+	if !compareFloat(w13expected, w13actual, 0.00005) {
 		t.Errorf("Expected %f but got %f for %s", w13expected, w13actual, p)
 	}
 }
