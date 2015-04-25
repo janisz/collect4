@@ -8,11 +8,12 @@ import (
 type Board struct {
 	x int
 	y int
+	balance int
 	board[] string
 }
 
 func NewBoard(x, y int) Board {
-	b := Board{x: x, y: y}
+	b := Board{x: x, y: y, balance: 0}
 	board := make([]string, x*y)
 	for i := range board {
 		board[i] = "0"
@@ -27,8 +28,12 @@ func generateAllPossibleBoards() {
 }
 
 func generateBoard(board Board, depth int) {
-	if depth == 8 {
-		board.printBoard()
+	if depth == 3 { // board.x * board.y in reality
+//		only possible scenarios
+		if (board.balance < 2 && board.balance > -2) {
+//			TODO: save to file here
+			board.printBoard()
+		}
 		return
 	}
 	fieldIndex := board.x*board.y-1-depth;
@@ -53,6 +58,11 @@ func (b Board) printBoard() {
 
 func (b *Board) makeMove(index int, symbol string) {
 	b.board[index] = symbol
+	if (symbol == "1") {
+		b.balance += 1
+	} else if (symbol == "-1") {
+		b.balance -= 1
+	}
 }
 
 func (b Board) isMoveAllowed(fieldIndex int) bool{
