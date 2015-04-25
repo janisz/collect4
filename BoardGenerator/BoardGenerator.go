@@ -14,16 +14,20 @@ func generateAllPossibleBoards() {
 }
 
 func generateBoard(vector [16]string, depth int) {
-	if depth == 2 {
+	if depth == 8 {
 		printBoard(vector)
 		return
 	}
 	next_depth := depth + 1
-	vector[15-depth] = "-1"
-	generateBoard(vector, next_depth)
-	vector[15-depth] = "1"
-	generateBoard(vector, next_depth)
-	vector[15-depth] = "0"
+	fieldIndex := 15-depth;
+	fieldBelowIndex := fieldIndex + 4;
+	if (fieldBelowIndex > 15 || vector[fieldBelowIndex] != "0") {
+		vector[fieldIndex] = "-1"
+		generateBoard(vector, next_depth)
+		vector[fieldIndex] = "1"
+		generateBoard(vector, next_depth)
+	}
+	vector[fieldIndex] = "0"
 	generateBoard(vector, next_depth)
 
 }
