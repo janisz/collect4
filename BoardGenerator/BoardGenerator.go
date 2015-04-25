@@ -15,17 +15,24 @@ func generateAllPossibleBoards() {
 
 func generateBoard(vector [16]string, depth int) {
 	if depth == 2 {
-		fmt.Printf("%s\n", strings.Join(vector[:], ","))
+		printBoard(vector)
 		return
 	}
 	next_depth := depth + 1
-	vector[depth] = "-1"
+	vector[15-depth] = "-1"
 	generateBoard(vector, next_depth)
-	vector[depth] = "1"
+	vector[15-depth] = "1"
 	generateBoard(vector, next_depth)
-	vector[depth] = "0"
+	vector[15-depth] = "0"
 	generateBoard(vector, next_depth)
 
+}
+
+func printBoard(vector [16]string) {
+	for i:=0; i<16; i+=4 {
+		fmt.Printf("%s \n", strings.Join(vector[i:i+4], ","))
+	}
+	fmt.Println("========")
 }
 
 func main() {
