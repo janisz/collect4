@@ -28,10 +28,9 @@ func generateAllPossibleBoards() {
 }
 
 func generateBoard(board Board, depth int) {
-	if depth == 3 { // board.x * board.y in reality
+	if depth == board.x*board.y {
 //		only possible scenarios
 		if (board.balance < 2 && board.balance > -2) {
-//			TODO: save to file here
 			board.printBoard()
 		}
 		return
@@ -50,6 +49,10 @@ func generateBoard(board Board, depth int) {
 }
 
 func (b Board) printBoard() {
+	fmt.Printf("%s \n", strings.Join(b.board[:], ","))
+}
+
+func (b Board) printHumanReadableBoard() {
 	for i:=0; i<b.x*b.y; i+=b.y {
 		fmt.Printf("%s \n", strings.Join(b.board[i:i+b.y], ","))
 	}
