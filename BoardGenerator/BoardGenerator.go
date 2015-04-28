@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"strings"
+	"os"
+	"strconv"
 )
 
 type Board struct {
@@ -22,8 +24,8 @@ func NewBoard(x, y int) Board {
 	return b
 }
 
-func generateAllPossibleBoards() {
-	board := NewBoard(4, 4)
+func generateAllPossibleBoards(x int, y int) {
+	board := NewBoard(x, y)
 	generateBoard(board, 0)
 }
 
@@ -74,5 +76,12 @@ func (b Board) isMoveAllowed(fieldIndex int) bool{
 }
 
 func main() {
-	generateAllPossibleBoards()
+	x := 4
+	y := 4
+	if (len(os.Args) == 3) {
+		x, _ = strconv.Atoi(os.Args[1])
+		y, _ = strconv.Atoi(os.Args[2])
+	}
+	fmt.Printf("%d %d", x, y)
+	generateAllPossibleBoards(x, y)
 }
