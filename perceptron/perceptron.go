@@ -1,4 +1,4 @@
-package connect4
+package perceptron
 
 import (
 	"math"
@@ -146,12 +146,21 @@ func (p *Perceptron) updateWeights(learningRate float64, momentum float64) {
 	}
 }
 
-func sigmoid(x float64) float64 {
+func Sigmoid(x float64) float64 {
 	return 1 / (1 + math.Exp(-x))
 }
 
-func sigmoidDerivative(x float64) float64 {
+func SigmoidDerivative(x float64) float64 {
 	return (1 - x) * x
+}
+
+
+func Tanh(x float64) float64 {
+	return math.Tanh(x)
+}
+
+func TanhDerivative(x float64) float64 {
+	return 1 - x*x;
 }
 
 func randoms(size int) []float64 {
