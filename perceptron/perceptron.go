@@ -5,25 +5,30 @@ import (
 	"math/rand"
 )
 
+type ActivationFunction int
+
+const (
+	SIGMOID = iota
+	TANH
+)
+
 type Perceptron struct {
-	bias                         bool
-	sizes                        []int
-	thresholds                   [][]float64
-	outputs                      [][]float64
-	errors                       [][]float64
-	deltas                       [][]float64
-	weights                      [][][]float64
-	changes                      [][][]float64
-	activationFunction           func(float64) float64
-	activationFunctionDerivative func(float64) float64
+	Bias               bool
+	Sizes              []int
+	Thresholds         [][]float64
+	outputs            [][]float64
+	errors             [][]float64
+	deltas             [][]float64
+	Weights            [][][]float64
+	changes            [][][]float64
+	ActivationFunction ActivationFunction
 }
 
-func NewPerceptron(sizes []int, bias bool, activationFunction, activationFunctionDerivative func(float64) float64) Perceptron {
+func NewPerceptron(sizes []int, bias bool, activation ActivationFunction) Perceptron {
 	return Perceptron{
-		bias:                         bias,
-		sizes:                        sizes,
-		activationFunction:           activationFunction,
-		activationFunctionDerivative: activationFunctionDerivative,
+		Bias:               bias,
+		Sizes:              sizes,
+		ActivationFunction: activation,
 	}
 }
 
@@ -31,31 +36,31 @@ func (p *Perceptron) Initialize() {
 
 	rand.Seed(1024)
 
-	p.weights = make([][][]float64, len(p.sizes))
-	p.changes = make([][][]float64, len(p.sizes))
+	p.Weights = make([][][]float64, len(p.Sizes))
+	p.changes = make([][][]float64, len(p.Sizes))
 
-	p.thresholds = make([][]float64, len(p.sizes))
-	p.outputs = make([][]float64, len(p.sizes))
-	p.errors = make([][]float64, len(p.sizes))
-	p.deltas = make([][]float64, len(p.sizes))
+	p.Thresholds = make([][]float64, len(p.Sizes))
+	p.outputs = make([][]float64, len(p.Sizes))
+	p.errors = make([][]float64, len(p.Sizes))
+	p.deltas = make([][]float64, len(p.Sizes))
 
-	for i := range p.weights {
+	for i := range p.Weights {
 
-		p.thresholds[i] = make([]float64, p.sizes[i])
-		p.outputs[i] = make([]float64, p.sizes[i])
-		p.errors[i] = make([]float64, p.sizes[i])
-		p.deltas[i] = make([]float64, p.sizes[i])
+		p.Thresholds[i] = make([]float64, p.Sizes[i])
+		p.outputs[i] = make([]float64, p.Sizes[i])
+		p.errors[i] = make([]float64, p.Sizes[i])
+		p.deltas[i] = make([]float64, p.Sizes[i])
 
-		p.weights[i] = make([][]float64, p.sizes[i])
-		p.changes[i] = make([][]float64, p.sizes[i])
+		p.Weights[i] = make([][]float64, p.Sizes[i])
+		p.changes[i] = make([][]float64, p.Sizes[i])
 
-		for j := 0; j < p.sizes[i]; j++ {
+		for j := 0; j < p.Sizes[i]; j++ {
 			if i == 0 {
-				p.weights[i][j] = randoms(0)
+				p.Weights[i][j] = randoms(0)
 				p.changes[i][j] = make([]float64, 0)
 			} else {
-				p.weights[i][j] = randoms(p.sizes[i-1])
-				p.changes[i][j] = make([]float64, p.sizes[i-1])
+				p.Weights[i][j] = randoms(p.Sizes[i-1])
+				p.changes[i][j] = make([]float64, p.Sizes[i-1])
 			}
 
 		}
@@ -63,17 +68,17 @@ func (p *Perceptron) Initialize() {
 }
 
 func (p *Perceptron) outputLayer() int {
-	return len(p.sizes) - 1
+	return len(p.Sizes) - 1
 }
 
 func (p *Perceptron) Compute(input []float64) []float64 {
 	p.outputs[0] = input
 	for layer := 1; layer <= p.outputLayer(); layer++ {
-		for neuron := 0; neuron < p.sizes[layer]; neuron++ {
-			neuronWeights := p.weights[layer][neuron]
+		for neuron := 0; neuron < p.Sizes[layer]; neuron++ {
+			neuronWeights := p.Weights[layer][neuron]
 			sum := 0.0
-			if p.bias {
-				sum += p.thresholds[layer][neuron]
+			if p.Bias {
+				sum += p.Thresholds[layer][neuron]
 			}
 			for k := range neuronWeights {
 				sum += neuronWeights[k] * input[k]
@@ -107,7 +112,7 @@ func (p *Perceptron) exercise(input, ideal []float64, learningRate, momentum flo
 
 func (p *Perceptron) computeDeltas(ideal []float64) {
 	for layer := p.outputLayer(); layer >= 0; layer-- {
-		for neuron := 0; neuron < p.sizes[layer]; neuron++ {
+		for neuron := 0; neuron < p.Sizes[layer]; neuron++ {
 			output := p.outputs[layer][neuron]
 			error := 0.0
 			if layer == p.outputLayer() {
@@ -115,7 +120,7 @@ func (p *Perceptron) computeDeltas(ideal []float64) {
 			} else {
 				deltas := p.deltas[layer+1]
 				for i, delta := range deltas {
-					error += delta * p.weights[layer+1][i][neuron]
+					error += delta * p.Weights[layer+1][i][neuron]
 				}
 			}
 			p.errors[layer][neuron] = error
@@ -124,11 +129,21 @@ func (p *Perceptron) computeDeltas(ideal []float64) {
 	}
 }
 
+func (p *Perceptron) activationFunction(x float64) float64 {
+	function, _ := activationFunction(p.ActivationFunction)
+	return function(x)
+}
+
+func (p *Perceptron) activationFunctionDerivative(x float64) float64 {
+	_, derivative := activationFunction(p.ActivationFunction)
+	return derivative(x)
+}
+
 func (p *Perceptron) updateWeights(learningRate float64, momentum float64) {
 	for layer := 1; layer <= p.outputLayer(); layer++ {
 		incoming := p.outputs[layer-1]
 
-		for neuron := 0; neuron < p.sizes[layer]; neuron++ {
+		for neuron := 0; neuron < p.Sizes[layer]; neuron++ {
 			delta := p.deltas[layer][neuron]
 
 			for previousLayerNeuron := range incoming {
@@ -137,10 +152,10 @@ func (p *Perceptron) updateWeights(learningRate float64, momentum float64) {
 				change = learningRate*delta*incoming[previousLayerNeuron] + momentum*change
 
 				p.changes[layer][neuron][previousLayerNeuron] = change
-				p.weights[layer][neuron][previousLayerNeuron] += change
+				p.Weights[layer][neuron][previousLayerNeuron] += change
 			}
-			if p.bias {
-				p.thresholds[layer][neuron] += learningRate * delta
+			if p.Bias {
+				p.Thresholds[layer][neuron] += learningRate * delta
 			}
 		}
 	}
@@ -154,13 +169,12 @@ func SigmoidDerivative(x float64) float64 {
 	return (1 - x) * x
 }
 
-
 func Tanh(x float64) float64 {
 	return math.Tanh(x)
 }
 
 func TanhDerivative(x float64) float64 {
-	return 1 - x*x;
+	return 1 - x*x
 }
 
 func randoms(size int) []float64 {
@@ -177,4 +191,14 @@ func MeanSquaredError(errors []float64) float64 {
 		sum += err * err
 	}
 	return sum / float64(len(errors))
+}
+
+func activationFunction(activation ActivationFunction) (func(float64) float64, func(float64) float64) {
+	switch activation {
+	case SIGMOID:
+		return Sigmoid, SigmoidDerivative
+	case TANH:
+		return Tanh, TanhDerivative
+	}
+	return nil, nil
 }

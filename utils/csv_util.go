@@ -1,8 +1,9 @@
 package utils
+
 import (
-	"os"
-	"fmt"
 	"encoding/csv"
+	"fmt"
+	"os"
 	"strconv"
 )
 
@@ -31,7 +32,7 @@ func stringsToFloats(strings []string) []float64 {
 	for entryIndex, entry := range strings {
 		var err error
 		floats[entryIndex], err = strconv.ParseFloat(entry, 64)
-		if (err != nil) {
+		if err != nil {
 			return []float64{}
 		}
 	}
