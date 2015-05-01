@@ -34,7 +34,7 @@ func main() {
 		for i := 0; i < 4; i++ {
 			fourOnSeven[i] = block.Compute(board_4x7[i*16 : (i+1)*16])
 		}
-		fourOnSeven[4] = board_4x7[4*16]
+		fourOnSeven[index][4] = board_4x7[4*16]
 	}
 
 	column := perceptron.NewPerceptron([]int{4, 16, 8, 1}, true, perceptron.TANH)
@@ -46,9 +46,9 @@ func main() {
 	for index, board_6x7 := range sixOnSevenRaw {
 		sixOnSeven[index] = make([]float64, 3+1)
 		for i := 0; i < 3; i++ {
-			fourOnSeven[i] = block.Compute(board_6x7[i*16 : (i+1)*16])
+			sixOnSeven[i] = block.Compute(board_6x7[i*16 : (i+1)*16])
 		}
-		fourOnSeven[3] = board_6x7[3*16]
+		sixOnSeven[index][3] = board_6x7[3*16]
 	}
 
 	full := perceptron.NewPerceptron([]int{3, 16, 8, 1}, true, perceptron.TANH)
