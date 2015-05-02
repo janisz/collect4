@@ -1,0 +1,34 @@
+\documentclass{mini}
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage{enumitem}
+\usepackage{todonotes}
+\presetkeys
+	{todonotes}
+	{inline}{}
+\usepackage{listings}
+\usepackage[lighttt]{lmodern}
+\usepackage{xcolor}
+\lstset{
+    backgroundcolor=\color{yellow!20},%
+    basicstyle=\small\ttfamily,%
+    numbers=left, numberstyle=\color{gray}\tiny, stepnumber=1
+}
+\lstset{keywords={%  
+		ACS,  after,  always, at, causes, ever,
+		generally,  if, imposible,  initially,  
+		invokes,  involved, -,  OBS,  perfomed,
+		releases, triggers, typically,  when
+    },keywordstyle={\bfseries},
+    frame=single,
+    breaklines=true,
+    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
+}  
+
+%------------------------------------------------------------------------------%
+\title{Scenariusze działań z efektami domyślnymi}
+\pm{Tomasz Janiszewski}
+\author{Tomasz Janiszewski
+\\Jakub Dutkowski}
+\monthyear{\today}
+%------------------------------------------------------------------------------%

@@ -1,0 +1,125 @@
+% This is based on the LLNCS.DEM the demonstration file of
+% the LaTeX macro package from Springer-Verlag
+% for Lecture Notes in Computer Science,
+% version 2.4 for LaTeX2e as of 16. April 2010
+%
+% See http://www.springer.com/computer/lncs/lncs+authors?SGWID=0-40209-0-0-0
+% for the full guidelines.
+%
+
+\documentclass{llncs}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{hyperref}
+\usepackage{subfig}
+
+\begin{document}
+
+\title{Ewolucyjna konstrukcja modeli neuronowych}
+%
+\titlerunning{ConvConnect4}  % abbreviated title (for running head)
+%                                     also used for the TOC unless
+%                                     \toctitle is used
+%
+\author{Tomasz Janiszewski\inst{1} \and Jakub Dutkowski\inst{2}}
+%
+\authorrunning{Tomasz Janiszewski, Jakub Dutkowski} % abbreviated author list (for running head)
+%
+%%%% list of authors for the TOC (use if author list has to be modified)
+\tocauthor{Tomasz Janiszewski and Jakub Dutkowski}
+
+\institute{Politechnika Warszawska\\
+Wydział Matematyki i Nauk Informacyjnych
+\email{janiszewskit@student.mini.pw.edu.pl}~~
+\email{dutkowskij@student.mini.pw.edu.pl}}
+
+\maketitle              % typeset the title of the contribution
+
+\keywords{Connect4, Neural Network, Evolutionary Algorithm, Neuroevolution, Connect Four}
+%
+\section{Zadanie}
+Zbadać efektywność zastosowania programowania genetycznego do konstrukcji neuronowych sieci MLP 
+(perceptronów wielowarstwowych) z pojedynczą warstwą ukrytą.
+Eksperymenty oprzeć na wybranym zestawie zadań regresji.
+
+\section{Wstęp}
+Celem projektu jest zbadanie przydatności programowania genetycznego do konstrukcji neuronowych sieci MLP.
+W projekcie skupimy się na budowaniu sieci grającej w Connect Four (\emph{pol. Czwórki}) \cite{connect4:wiki}
+na planszy o rozmiarze $4 \times 4$.
+
+\section{Opis problemu}
+Podczas konstrukcji sieci neuronowych istnieje problem doboru parametrów tej sieci takich jak:
+\begin{itemize}
+	\item ilość warstw ukrytych
+	\item liczba neuronów w każdej warstwie
+	\item funkcja aktywacji neuronu
+	\item obecność biasu
+	\item inicjalne wagi
+	\item współczynniki nauki
+\end{itemize}
+aby jak proces uczenia był jak najbardziej efektywny. Algorytmy opartę na metodzie propagacji wstecznej osiągają
+dość dobre rezultaty, jednak nie są odporne na utykanie w ekstremach lokalnych oraz osiągają małą zbieżność
+na płaskich odcinkach funkcji celu. Aby wyeliminować te problemy stosuje się takie techniki jak symulowane wyżażanie.
+W nimniejszej pracy chcemy się zająć użyciem algorytmu ewolucyjnego aby znaleźć optymalną strukturę sieci
+dla danego problemu przeszukując jak najmniejszy obszar.
+
+\section{Sieć neuronowa}
+Badana rodzina sieci neuronowych będzie grała w Connect Four na planszy o rozmiarze $4 \times 4$. Plansza będzie zakodowana
+jako tablica szesnastu ($16$) elementów, z których każdy może przyjmować wartości $-1,0,1$ oznaczające
+\begin{itemize}
+	\item[$-1$] pole zajęte przez przeciwnika
+	\item[$0$] pole wolne
+	\item[$1$] pole zajęte przez gracza
+\end{itemize}
+Na wyjściu sieci dla zadanej planszy znajduje się liczba oznaczająca ruch dla danego na wejściu stanu planszy.
+
+\section{Algorytm uczenia}
+Sieć będzie uczona za pomocą algorytmu propagacji wstecznej. Dane treningowe wygenerowane zostaną za pomocą programu programu
+opartego o algorytm alfa-beta.
+
+\section{Algorytm ewolucyjny}
+W projekcie zastosujemy klasyczny algorytm ewolucyjny.
+\subsection{Genotyp}
+\begin{itemize}
+	\item funkcja aktywacji -- Tangens hiperboliczny i funkcja sigmoidalna		
+	\item ilość neuronów w warstwie ukrytej
+	\item wektor wag
+\end{itemize}
+
+\subsection{Krzyżowanie}
+Podczas krzyżowania osobniki będą wymieniały się wektorami wag i funkcjami aktywacji. Funkcje aktywacji będą zachowywać
+się analogicznie do grup krwi. W przypadku dwóch alleli dominujących wynikiem będzie funkcja sigmoidalna, natomiast w
+przypadku dwóch alleli recesywnych funkcja liniowa.
+Ponieważ wektor wag ma krytyczne znaczenie dla zbieżności nauki planujemy przeprowadzić kilka testów krzyżowania wektora
+wag dla róźnych współczynnikiów funkcji mieszającej.
+
+\subsection{Mutacje}
+Mutacją będzie podlegał wektor wag. Mutacja oznacza przemnożenie losowej wagi przez losową stałą z zakresu $(0,2)$
+
+\subsection{Funkcja przystosowania}
+Wartością funkcji przystosowania będzie błąd na zbiorze testowym po ustalonym treningu.
+
+\subsection{Metoda selekcji}
+Do selekcji zostanie użyta metoda ruletki.
+
+%
+% ---- Bibliography ----
+%
+\begin{thebibliography}{4}
+%
+\bibitem {mandziuk2011}
+Mandziuk, J.:
+\textsl{Towards Cognitively Plausible Game Playing Systems}
+IEEE COMPUTATIONAL INTELLIGENCE MAGAZINE, Maj, 2011
+\bibitem {connect4:wiki}
+\textsl{Connect Four --- {W}ikipedia{,} The Free Encyclopedia}
+\url{http://en.wikipedia.org/wiki/Connect_Four}
+\bibitem {velena}
+\textsl{A Shannon C-type program which plays connect four perfectly}
+\url{http://www.ce.unipr.it/~gbe/velena.html}
+\end{thebibliography}
+
+\end{document}
