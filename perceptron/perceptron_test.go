@@ -98,7 +98,7 @@ func Test_Json_Marshaling(t *testing.T) {
 
 	actual.SetUp()
 
-	if actual.Compute([]float64{0,1})[0] != original.Compute([]float64{0,1})[0] {
+	if actual.Compute([]float64{0, 1})[0] != original.Compute([]float64{0, 1})[0] {
 		t.Errorf("Something went worng %s %s", err, encodedPerceptron)
 	}
 

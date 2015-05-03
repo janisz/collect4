@@ -1,8 +1,9 @@
 package board
+
 import (
 	"fmt"
-	"strings"
 	"github.com/janisz/connect4/utils"
+	"strings"
 )
 
 type Board struct {
@@ -21,9 +22,9 @@ func NewBoard(x, y int) Board {
 
 func (b Board) SubBoard(x, y, width, length int) Board {
 	subBoard := NewBoard(width, length)
-	for j := 0 ; j < length ; j++ {
-		for i := 0 ; i < width ; i++ {
-			subBoard.Board[i+j*width] = b.Board[y*b.X + x + i + j * b.X]
+	for j := 0; j < length; j++ {
+		for i := 0; i < width; i++ {
+			subBoard.Board[i+j*width] = b.Board[y*b.X+x+i+j*b.X]
 		}
 	}
 	return subBoard
@@ -59,4 +60,3 @@ func (b Board) IsMoveAllowed(fieldIndex int) bool {
 func (b Board) length() int {
 	return len(b.Board)
 }
-

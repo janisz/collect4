@@ -2,12 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/janisz/connect4/board"
 	"os"
 	"strconv"
-	"github.com/janisz/connect4/board"
 )
-
-
 
 func generateAllPossibleBoards(x int, y int) {
 	board := board.NewBoard(x, y)
