@@ -21,13 +21,13 @@ func ReadCsvToFloats(path string) [][]float64 {
 	data := make([][]float64, len(records))
 
 	for recordIndex, record := range records {
-		data[recordIndex] = stringsToFloats(record)
+		data[recordIndex] = StringsToFloats(record)
 	}
 
 	return data
 }
 
-func stringsToFloats(strings []string) []float64 {
+func StringsToFloats(strings []string) []float64 {
 	floats := make([]float64, len(strings))
 	for entryIndex, entry := range strings {
 		var err error
@@ -37,4 +37,12 @@ func stringsToFloats(strings []string) []float64 {
 		}
 	}
 	return floats
+}
+
+func FloatsToStrings(floats []float64, format string) []string {
+	strings := make([]string, len(floats))
+	for i, value := range floats {
+		strings[i] = fmt.Sprintf(format, value)
+	}
+	return strings
 }
