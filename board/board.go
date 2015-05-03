@@ -19,6 +19,16 @@ func NewBoard(x, y int) Board {
 	return b
 }
 
+func (b Board) SubBoard(x, y, width, length int) Board {
+	subBoard := NewBoard(width, length)
+	for j := 0 ; j < length ; j++ {
+		for i := 0 ; i < width ; i++ {
+			subBoard.Board[i+j*width] = b.Board[y*b.X + x + i + j * b.X]
+		}
+	}
+	return subBoard
+}
+
 func (b Board) PrintBoard() {
 	fmt.Printf("%s \n", strings.Join(utils.FloatsToStrings(b.Board[:], "%2.0f"), ","))
 }
