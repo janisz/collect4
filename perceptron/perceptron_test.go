@@ -92,9 +92,16 @@ func Test_Json_Marshaling(t *testing.T) {
 	t.Logf("%s", encodedPerceptron)
 	json.Unmarshal(encodedPerceptron, actual)
 
-	if err != nil || len(actual.Sizes) != len(original.Sizes) {
+	if err != nil || len(actual.Sizes) != len(original.Sizes) || len(actual.Weights) != len(original.Weights) {
 		t.Errorf("Something went worng %s %s", err, encodedPerceptron)
 	}
+
+	actual.SetUp()
+
+	if actual.Compute([]float64{0,1})[0] != original.Compute([]float64{0,1})[0] {
+		t.Errorf("Something went worng %s %s", err, encodedPerceptron)
+	}
+
 }
 
 func BenchmarkLearn(b *testing.B) {

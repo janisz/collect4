@@ -32,6 +32,36 @@ func NewPerceptron(sizes []int, bias bool, activation ActivationFunction) Percep
 	}
 }
 
+//This function must be called after unmarshalling perceptron
+func (p *Perceptron) SetUp() {
+
+	rand.Seed(1024)
+
+	p.changes = make([][][]float64, len(p.Sizes))
+
+	p.outputs = make([][]float64, len(p.Sizes))
+	p.errors = make([][]float64, len(p.Sizes))
+	p.deltas = make([][]float64, len(p.Sizes))
+
+	for i := range p.Weights {
+
+		p.outputs[i] = make([]float64, p.Sizes[i])
+		p.errors[i] = make([]float64, p.Sizes[i])
+		p.deltas[i] = make([]float64, p.Sizes[i])
+
+		p.changes[i] = make([][]float64, p.Sizes[i])
+
+		for j := 0; j < p.Sizes[i]; j++ {
+			if i == 0 {
+				p.changes[i][j] = make([]float64, 0)
+			} else {
+				p.changes[i][j] = make([]float64, p.Sizes[i-1])
+			}
+
+		}
+	}
+}
+
 func (p *Perceptron) Initialize() {
 
 	rand.Seed(1024)
