@@ -9,54 +9,88 @@ import (
 )
 
 func main() {
-	argsWithoutProg := os.Args[1:]
-	if len(argsWithoutProg) != 1 {
-		fmt.Printf("Require resources file names")
-		fmt.Printf("Ex: 4x4.csv 4x7.csv 6x7.csv")
-		return
+	args := os.Args[1:]
+
+	if len(args) == 0 {
+		fmt.Println(
+			"1. Build network: go run main.go 4x4.csv 4x7.csv 6x7.csv\n",
+			"2. Play: go run main.go board.csv",
+		)
 	}
 
-	/* TODO: NOT FINISHED YET
-	 *	Sanitize data (add normalisation)
-	 *	Finish generating perceptrons (think about classification approach)
-	 *	Combine everything in one huge network
-	 *	Add basic UI
-	 */
+	if len(args) == 3 {
+		build(args[0], args[1], args[2])
+		return
+	} else if len(args) == 1 {
+		sixOnSeven := utils.ReadCsvToFloats(args[0])
+		for i, line := range sixOnSeven {
+			board_6x7 := board.NewBoard(6, 7)
+			board_6x7.Board = line[:6*7]
+			fmt.Printf("Game %d\n", i)
+			board_6x7.PrintHumanReadableBoard()
+			fmt.Printf("Move %d expected %d\n", play(board_6x7), denormalize(line[6*7]))
+		}
 
-	fourOnFour := utils.ReadCsvToFloats(argsWithoutProg[0])
+	}
+
+}
+
+func build(fourOnFourFilename, fourOnSevenFilename, sixOnSevenFilename string) {
+
+	fourOnFour := utils.ReadCsvToFloats(fourOnFourFilename)
+
+	inputs_4x4 := make([][]float64, len(fourOnFour))
+	outputs_4x4 := make([][]float64, len(fourOnFour))
+	for i, line := range fourOnFour {
+		inputs_4x4[i] = make([]float64, 4*4)
+		outputs_4x4[i] = make([]float64, 1)
+		inputs_4x4[i] = line[:16]
+		outputs_4x4[i][0] = line[16]
+	}
+
 	block := perceptron.NewPerceptron([]int{4 * 4, 12, 8, 1}, true, perceptron.TANH)
 	block.Initialize()
-	block.Learn(fourOnFour[:16], fourOnFour[16:], 0.6, 0.1, 1000, 0.001)
+	block.Learn(inputs_4x4, outputs_4x4, 0.6, 0.1, 1000, 0.001)
 	utils.Save(block, "block.json")
 
-	fourOnSevenRaw := utils.ReadCsvToFloats(argsWithoutProg[1])
-	fourOnSeven := make([][]float64, len(fourOnSevenRaw))
-	for index, board_4x7 := range fourOnSevenRaw {
-		fourOnSeven[index] = make([]float64, 4+1)
-		for i := 0; i < 4; i++ {
-			fourOnSeven[i] = block.Compute(board_4x7[i*16 : (i+1)*16])
+	fourOnSeven := utils.ReadCsvToFloats(fourOnSevenFilename)
+
+	inputs_4x7 := make([][]float64, len(fourOnSeven))
+	outputs_4x7 := make([][]float64, len(fourOnSeven))
+	for i, line := range fourOnSeven {
+		inputs_4x7[i] = make([]float64, 4)
+		outputs_4x7[i] = make([]float64, 1)
+		for j := 0; j < 4; j++ {
+			board_4x7 := board.NewBoard(4, 7)
+			board_4x7.Board = line[:4*7]
+			inputs_4x7[i][j] = block.Compute(board_4x7.SubBoard(0, j, 4, 4).Board)[0]
 		}
-		fourOnSeven[index][4] = board_4x7[4*16]
+		outputs_4x7[i][0] = line[4*7]
 	}
 
 	column := perceptron.NewPerceptron([]int{4, 16, 8, 1}, true, perceptron.TANH)
 	column.Initialize()
-	column.Learn(fourOnSeven[:4], fourOnSeven[4:], 0.6, 0.1, 1000, 0.001)
+	column.Learn(inputs_4x7, outputs_4x7, 0.6, 0.1, 1000, 0.001)
 	utils.Save(column, "column.json")
 
-	sixOnSevenRaw := utils.ReadCsvToFloats(argsWithoutProg[2])
-	sixOnSeven := make([][]float64, len(sixOnSevenRaw))
-	for index, board_6x7 := range sixOnSevenRaw {
-		sixOnSeven[index] = make([]float64, 3+1)
-		for i := 0; i < 3; i++ {
-			sixOnSeven[i] = block.Compute(board_6x7[i*16 : (i+1)*16])
+	sixOnSeven := utils.ReadCsvToFloats(sixOnSevenFilename)
+
+	inputs_6x7 := make([][]float64, len(sixOnSeven))
+	outputs_6x7 := make([][]float64, len(sixOnSeven))
+	for i, line := range sixOnSeven {
+		inputs_6x7[i] = make([]float64, 3)
+		outputs_6x7[i] = make([]float64, 1)
+		for j := 0; j < 3; j++ {
+			board_6x7 := board.NewBoard(6, 7)
+			board_6x7.Board = line[:6*7]
+			inputs_6x7[i][j] = block.Compute(board_6x7.SubBoard(j, 0, 4, 7).Board)[0]
 		}
-		sixOnSeven[index][3] = board_6x7[3*16]
+		outputs_6x7[i][0] = line[6*7]
 	}
 
 	decider := perceptron.NewPerceptron([]int{3, 16, 8, 1}, true, perceptron.TANH)
 	decider.Initialize()
-	decider.Learn(sixOnSeven[:3], sixOnSeven[3:], 0.6, 0.1, 1000, 0.001)
+	decider.Learn(inputs_6x7, outputs_6x7, 0.6, 0.1, 1000, 0.001)
 	utils.Save(decider, "decider.json")
 }
 
@@ -71,7 +105,7 @@ func play(board board.Board) int {
 	utils.Load(decider, "decider.json")
 
 	columnInput := make([][]float64, 3)
-	for j := 0; j < 4; j++ {
+	for j := 0; j < 3; j++ {
 		columnInput[j] = make([]float64, 4)
 		for i := 0; i < 4; i++ {
 			columnInput[j][i] = block.Compute(board.SubBoard(i, j, 4, 4).Board)[0]
@@ -80,8 +114,13 @@ func play(board board.Board) int {
 
 	deciderInput := make([]float64, 3)
 	for i := 0; i < 3; i++ {
-		deciderInput[i] = block.Compute(columnInput[i])[0]
+		deciderInput[i] = column.Compute(columnInput[i])[0]
 	}
 
-	return int(decider.Compute(deciderInput)[0])
+	deciderOutput := decider.Compute(deciderInput)[0]
+	return denormalize(deciderOutput)
+}
+
+func denormalize(deciderOutput float64) int {
+	return int(utils.Round(2*deciderOutput+2, 0.5, 0))
 }
