@@ -15,3 +15,13 @@ func Save(perceptron perceptron.Perceptron, filename string ) {
 		panic(err)
 	}
 }
+
+func Load(perceptron perceptron.Perceptron, filename string ) {
+
+	data, err := ioutil.ReadFile(filename)
+	if err != nil {
+		panic(err)
+	}
+	json.Unmarshal(data, perceptron)
+	perceptron.SetUp()
+}
