@@ -35,10 +35,17 @@ func (b Board) PrintBoard() {
 }
 
 func (b Board) PrintHumanReadableBoard() {
-	for i := 0; i < b.length(); i += b.Y {
-		fmt.Printf("%s \n", strings.Join(utils.FloatsToStrings(b.Board[i:i+b.Y], "%2.0f"), ","))
+	fmt.Print(b.String())
+}
+
+func (b Board) String() string {
+	str := ""
+	str += fmt.Sprintf("\n%s\n", strings.Join(make([]string, b.X), "===="))
+	for i := 0; i < b.length(); i += b.X {
+		str += fmt.Sprintf("%s \n", strings.Join(utils.FloatsToStrings(b.Board[i:i+b.X], "%2.0f"), ","))
 	}
-	fmt.Println("========")
+	str += fmt.Sprintf("%s\n", strings.Join(make([]string, b.X), "===="))
+	return str
 }
 
 func (b *Board) MakeMove(index int, symbol string) {
