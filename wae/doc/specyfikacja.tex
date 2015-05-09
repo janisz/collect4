@@ -81,23 +81,45 @@ Sieć będzie uczona za pomocą algorytmu propagacji wstecznej. Dane treningowe 
 opartego o algorytm alfa-beta.
 
 \section{Algorytm ewolucyjny}
-W projekcie zastosujemy klasyczny algorytm ewolucyjny.
-\subsection{Genotyp}
+W projekcie zastosujemy klasyczny algorytm genetyczny.
+\subsection{Fenotyp}
 \begin{itemize}
-	\item funkcja aktywacji -- Tangens hiperboliczny i funkcja sigmoidalna		
+	\item funkcja aktywacji
 	\item ilość neuronów w warstwie ukrytej
 	\item wektor wag
 \end{itemize}
 
+\subsection{Genotyp}
+\begin{itemize}
+	\item funkcja aktywacji -- 3 elementowy wektor binarny okręslający funkcje wyjścia poszczególnych warstw
+	\item ilość neuronów w warstwie ukrytej -- dodatnia liczba całkowita
+	\item wektor wag -- dodatnia liczba całkowita określająca ziarno losowania wektora wag
+	\item bias -- 3 elementowy wektor binarny okręslający obecność biasu dla poszczególnych warstw
+\end{itemize}
+
+\begin{example}
+
+\begin{tabular}{ | c | c | c | c | c | c | c | c | }
+	\hline
+	0 & 1 & 0 & 5 & 2356 & 0 & 1 & 1\\
+	\hline
+\end{tabular}
+\\
+Powyższa definicja oznacza sieć neuronową złożoną z 3 warstw 
+(wejście -- 4 neurony, warstwa ukryta -- 5, wyjście -- 1).
+Warstwa wejściowy i wyjściowa kożystają z tangensa hiperbolicznego jako funkcji przejścia natomiast 
+warstwa ukryta używa funkcji sigmoidalnej. Bias jest obecny w drugiej i trzeciej warstwie. A ziarno
+generatora liczb losowych ustawione jest na $2356$.
+\end{example}
+
 \subsection{Krzyżowanie}
-Podczas krzyżowania osobniki będą wymieniały się wektorami wag i funkcjami aktywacji. Funkcje aktywacji będą zachowywać
-się analogicznie do grup krwi. W przypadku dwóch alleli dominujących wynikiem będzie funkcja sigmoidalna, natomiast w
-przypadku dwóch alleli recesywnych funkcja liniowa.
-Ponieważ wektor wag ma krytyczne znaczenie dla zbieżności nauki planujemy przeprowadzić kilka testów krzyżowania wektora
-wag dla róźnych współczynnikiów funkcji mieszającej.
+Krzyżowanie funkcji aktywacji będzie i biasu oparte będzie na krzyżowaniu dwupunktowym. Natomiast
+krzyżowanie ilości neuronów w warstwie ukrytej i wektora wag na krzyżowaniu uśredniającym.
 
 \subsection{Mutacje}
-Mutacją będzie podlegał wektor wag. Mutacja oznacza przemnożenie losowej wagi przez losową stałą z zakresu $(0,2)$
+Mutacja funkcji przejśćia i biasu będzie polegała na zamianie bitu na losowy.
+Mutacja ilości neuronów w warstwie ukrytej i wektora wag będzie polegało na zmianie
+wartości o losowy współczynnik.
 
 \subsection{Funkcja przystosowania}
 Wartością funkcji przystosowania będzie błąd na zbiorze testowym po ustalonym treningu.
@@ -110,6 +132,9 @@ Do selekcji zostanie użyta metoda ruletki.
 %
 \begin{thebibliography}{4}
 %
+\bibitem {arabas}
+Arabas J.:
+\textsl{Wykłady z algorytmów ewolucyjnych}, WNT Warszawa,2001
 \bibitem {mandziuk2011}
 Mandziuk, J.:
 \textsl{Towards Cognitively Plausible Game Playing Systems}
