@@ -53,17 +53,17 @@ na planszy o rozmiarze $4 \times 4$.
 \section{Opis problemu}
 Podczas konstrukcji sieci neuronowych istnieje problem doboru parametrów tej sieci takich jak:
 \begin{itemize}
-	\item ilość warstw ukrytych
+	\item liczba warstw ukrytych
 	\item liczba neuronów w każdej warstwie
 	\item funkcja aktywacji neuronu
 	\item obecność biasu
-	\item inicjalne wagi
+	\item wagi początkowe
 	\item współczynniki nauki
 \end{itemize}
-aby jak proces uczenia był jak najbardziej efektywny. Algorytmy opartę na metodzie propagacji wstecznej osiągają
+aby proces uczenia był jak najbardziej efektywny. Algorytmy oparte na metodzie propagacji wstecznej osiągają
 dość dobre rezultaty, jednak nie są odporne na utykanie w ekstremach lokalnych oraz osiągają małą zbieżność
-na płaskich odcinkach funkcji celu. Aby wyeliminować te problemy stosuje się takie techniki jak symulowane wyżażanie.
-W nimniejszej pracy chcemy się zająć użyciem algorytmu ewolucyjnego aby znaleźć optymalną strukturę sieci
+na płaskich odcinkach funkcji celu. Aby wyeliminować te problemy stosuje się takie techniki jak symulowane wyżarzanie.
+W niniejszej pracy chcemy się zająć użyciem algorytmu ewolucyjnego aby znaleźć optymalną strukturę sieci
 dla danego problemu przeszukując jak najmniejszy obszar.
 
 \section{Sieć neuronowa}
@@ -72,12 +72,12 @@ jako tablica szesnastu ($16$) elementów, z których każdy może przyjmować wa
 \begin{itemize}
 	\item[$-1$] pole zajęte przez przeciwnika
 	\item[$0$] pole wolne
-	\item[$1$] pole zajęte przez gracza
+	\item[$1$] pole zajęte przez gracza aktywnego
 \end{itemize}
 Na wyjściu sieci dla zadanej planszy znajduje się liczba oznaczająca ruch dla danego na wejściu stanu planszy.
 
 \section{Algorytm uczenia}
-Sieć będzie uczona za pomocą algorytmu propagacji wstecznej. Dane treningowe wygenerowane zostaną za pomocą programu programu
+Sieć będzie uczona za pomocą algorytmu propagacji wstecznej. Dane treningowe wygenerowane zostaną za pomocą programu
 opartego o algorytm alfa-beta.
 
 \section{Algorytm ewolucyjny}
@@ -85,14 +85,14 @@ W projekcie zastosujemy klasyczny algorytm genetyczny.
 \subsection{Fenotyp}
 \begin{itemize}
 	\item funkcja aktywacji
-	\item ilość neuronów w warstwie ukrytej
+	\item liczba neuronów w warstwie ukrytej
 	\item wektor wag
 \end{itemize}
 
 \subsection{Genotyp}
 \begin{itemize}
-	\item funkcja aktywacji -- 3 elementowy wektor binarny okręslający funkcje wyjścia poszczególnych warstw
-	\item ilość neuronów w warstwie ukrytej -- dodatnia liczba całkowita
+	\item funkcja aktywacji -- 3 elementowy wektor binarny określający funkcje wyjścia poszczególnych warstw
+	\item liczba neuronów w warstwie ukrytej -- dodatnia liczba całkowita
 	\item wektor wag -- dodatnia liczba całkowita określająca ziarno losowania wektora wag
 	\item bias -- 3 elementowy wektor binarny okręslający obecność biasu dla poszczególnych warstw
 \end{itemize}
@@ -107,18 +107,18 @@ W projekcie zastosujemy klasyczny algorytm genetyczny.
 \\
 Powyższa definicja oznacza sieć neuronową złożoną z 3 warstw 
 (wejście -- 4 neurony, warstwa ukryta -- 5, wyjście -- 1).
-Warstwa wejściowy i wyjściowa kożystają z tangensa hiperbolicznego jako funkcji przejścia natomiast 
-warstwa ukryta używa funkcji sigmoidalnej. Bias jest obecny w drugiej i trzeciej warstwie. A ziarno
+Warstwa wejściowa i wyjściowa korzystają z tangensa hiperbolicznego jako funkcji przejścia natomiast 
+warstwa ukryta używa funkcji sigmoidalnej. Bias jest obecny w drugiej i trzeciej warstwie. Ziarno
 generatora liczb losowych ustawione jest na $2356$.
 \end{example}
 
 \subsection{Krzyżowanie}
-Krzyżowanie funkcji aktywacji będzie i biasu oparte będzie na krzyżowaniu dwupunktowym. Natomiast
-krzyżowanie ilości neuronów w warstwie ukrytej i wektora wag na krzyżowaniu uśredniającym.
+Krzyżowanie funkcji aktywacji i biasu oparte będzie na krzyżowaniu dwupunktowym. Natomiast
+krzyżowanie liczby neuronów w warstwie ukrytej i wektora wag na krzyżowaniu uśredniającym.
 
 \subsection{Mutacje}
-Mutacja funkcji przejśćia i biasu będzie polegała na zamianie bitu na losowy.
-Mutacja ilości neuronów w warstwie ukrytej i wektora wag będzie polegało na zmianie
+Mutacja funkcji przejścia i biasu będzie polegała na zamianie bitu na losowy.
+Mutacja liczby neuronów w warstwie ukrytej i wektora wag będzie polegało na zmianie
 wartości o losowy współczynnik.
 
 \subsection{Funkcja przystosowania}
