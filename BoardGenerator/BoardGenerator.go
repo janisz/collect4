@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"github.com/janisz/connect4/board"
 	"os"
 	"strconv"
+	"math/rand"
 )
 
 func generateAllPossibleBoards(x int, y int) {
@@ -13,7 +13,8 @@ func generateAllPossibleBoards(x int, y int) {
 }
 
 func generateBoard(board board.Board, depth int) {
-	if depth == board.X*board.Y {
+	p := rand.Float32()
+	if (depth == board.X*board.Y) || (p < 0.25) {
 		//		only possible scenarios
 		if board.Balance < 2 && board.Balance > -2 {
 			board.PrintBoard()
@@ -40,6 +41,5 @@ func main() {
 		x, _ = strconv.Atoi(os.Args[1])
 		y, _ = strconv.Atoi(os.Args[2])
 	}
-	fmt.Printf("%d %d", x, y)
 	generateAllPossibleBoards(x, y)
 }
