@@ -37,14 +37,20 @@ func main() {
 		return
 	} else if len(args) == 1 {
 		sixOnSeven := utils.ReadCsvToFloats(args[0])
+		correct := 0
 		for i, line := range sixOnSeven {
 			board_6x7 := board.NewBoard(6, 7)
 			board_6x7.Board = line[:6*7]
 			fmt.Printf("Game %d\n", i)
 			board_6x7.PrintHumanReadableBoard()
-			fmt.Printf("Move %d expected %d\n", play(board_6x7), denormalize(line[6*7]))
+			actual := play(board_6x7)
+			expected := denormalize(line[6*7], board_6x7.X)
+			if (actual == expected) {
+				correct += 1
+			}
+			fmt.Printf("Move %d expected %d\n", actual, expected)
 		}
-
+		fmt.Printf("%d correct in %d tests accuracy %f", correct, len(sixOnSeven), float64(correct)/float64(len(sixOnSeven)))
 	}
 
 }
@@ -155,9 +161,9 @@ func play(board board.Board) int {
 	log.Info("Decider input input %s", utils.FloatsToStrings(deciderInput, "%2.0f"))
 
 	deciderOutput := decider.Compute(deciderInput)[0]
-	return denormalize(deciderOutput)
+	return denormalize(deciderOutput, board.X)
 }
 
-func denormalize(deciderOutput float64) int {
-	return int(utils.Round(2*deciderOutput+2, 0.5, 0))
+func denormalize(deciderOutput float64, columns int) int {
+	return int(utils.Round(deciderOutput * float64(columns), 0.5, 0))
 }
