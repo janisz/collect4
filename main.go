@@ -105,7 +105,7 @@ func build(fourOnFourFilename, fourOnSevenFilename, sixOnSevenFilename string) {
 		for j := 0; j < 3; j++ {
 			subBoard := board_6x7.SubBoard(j, 0, 4, 7)
 			log.Debug("Column board %d%s", j, subBoard)
-			inputs_6x7[i][j] = block.Compute(subBoard.Board)[0]
+			inputs_6x7[i][j] = column.Compute(subBoard.Board)[0]
 		}
 		outputs_6x7[i][0] = line[6*7]
 	}
