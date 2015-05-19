@@ -50,7 +50,7 @@ func main() {
 			}
 			fmt.Printf("Move %d expected %d\n", actual, expected)
 		}
-		fmt.Printf("%d correct in %d tests accuracy %f", correct, len(sixOnSeven), float64(correct)/float64(len(sixOnSeven)))
+		fmt.Printf("%d correct in %d tests accuracy %f\n", correct, len(sixOnSeven), float64(correct)/float64(len(sixOnSeven)))
 	}
 
 }
@@ -70,7 +70,7 @@ func build(fourOnFourFilename, fourOnSevenFilename, sixOnSevenFilename string) {
 
 	block := perceptron.NewPerceptron([]int{4 * 4, 12, 8, 1}, true, perceptron.TANH)
 	block.Initialize()
-	error, iterations := block.Learn(inputs_4x4, outputs_4x4, nil, nil, 0.6, 0.1, 1000, 0.001)
+	error, iterations := block.Learn(inputs_4x4, outputs_4x4, nil, nil, 0.01, 0.1, 2000, 0.001)
 	log.Info("Learning block endend with error %f after %d iterations", error, iterations)
 	utils.Save(block, "block.json")
 
@@ -79,7 +79,7 @@ func build(fourOnFourFilename, fourOnSevenFilename, sixOnSevenFilename string) {
 
 	column := perceptron.NewPerceptron([]int{4, 16, 8, 1}, true, perceptron.TANH)
 	column.Initialize()
-	error, iterations = column.Learn(inputs_4x7, outputs_4x7, nil, nil, 0.6, 0.1, 1000, 0.001)
+	error, iterations = column.Learn(inputs_4x7, outputs_4x7, nil, nil, 0.01, 0.1, 1000, 0.0001)
 	log.Info("Learning column endend with error %f after %d iterations", error, iterations)
 	utils.Save(column, "column.json")
 
@@ -88,7 +88,7 @@ func build(fourOnFourFilename, fourOnSevenFilename, sixOnSevenFilename string) {
 
 	decider := perceptron.NewPerceptron([]int{3, 16, 8, 1}, true, perceptron.TANH)
 	decider.Initialize()
-	error, iterations = decider.Learn(inputs_6x7, outputs_6x7, nil, nil, 0.01, 0.05, 10000, 0.001)
+	error, iterations = decider.Learn(inputs_6x7, outputs_6x7, nil, nil, 0.01, 0.01, 10000, 0.001)
 	log.Info("Learning decider endend with error %f after %d iterations", error, iterations)
 	utils.Save(decider, "decider.json")
 }
