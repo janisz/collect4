@@ -117,7 +117,7 @@ func Test_ShouldStopVenErrorOnValidationRise(t *testing.T) {
 	p.Initialize()
 	ee, iterationsWithValidation := p.Learn(input, ideal, validationInput, validationIdeal, 0.7, 0.3, 1000, 0.0)
 	t.Log(ee)
-	if (iterationsWithoutValidation > iterationsWithValidation) {
+	if (iterationsWithoutValidation < iterationsWithValidation) {
 		t.Errorf("There should be less iterations with validation %d >= %d", iterationsWithoutValidation, iterationsWithValidation)
 	}
 
