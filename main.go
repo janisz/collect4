@@ -69,9 +69,27 @@ func build(fourOnFourFilename, fourOnSevenFilename, sixOnSevenFilename string) {
 	utils.Save(block, "block.json")
 
 	fourOnSeven := utils.ReadCsvToFloats(fourOnSevenFilename)
+	inputs_4x7, outputs_4x7 := generateFourOnSevenBoard(block, fourOnSeven)
 
-	inputs_4x7 := make([][]float64, len(fourOnSeven))
-	outputs_4x7 := make([][]float64, len(fourOnSeven))
+	column := perceptron.NewPerceptron([]int{4, 16, 8, 1}, true, perceptron.TANH)
+	column.Initialize()
+	error, iterations = column.Learn(inputs_4x7, outputs_4x7, nil, nil, 0.6, 0.1, 1000, 0.001)
+	log.Info("Learning column endend with error %f after %d iterations", error, iterations)
+	utils.Save(column, "column.json")
+
+	sixOnSeven := utils.ReadCsvToFloats(sixOnSevenFilename)
+	inputs_6x7, outputs_6x7 := generateSixOnSevenBoard(column, sixOnSeven)
+
+	decider := perceptron.NewPerceptron([]int{3, 16, 8, 1}, true, perceptron.TANH)
+	decider.Initialize()
+	error, iterations = decider.Learn(inputs_6x7, outputs_6x7, nil, nil, 0.01, 0.05, 10000, 0.001)
+	log.Info("Learning decider endend with error %f after %d iterations", error, iterations)
+	utils.Save(decider, "decider.json")
+}
+
+func generateFourOnSevenBoard(block perceptron.Perceptron, fourOnSeven [][]float64) (inputs_4x7, outputs_4x7 [][]float64) {
+	inputs_4x7 = make([][]float64, len(fourOnSeven))
+	outputs_4x7 = make([][]float64, len(fourOnSeven))
 	for i, line := range fourOnSeven {
 		inputs_4x7[i] = make([]float64, 4)
 		outputs_4x7[i] = make([]float64, 1)
@@ -85,17 +103,12 @@ func build(fourOnFourFilename, fourOnSevenFilename, sixOnSevenFilename string) {
 		}
 		outputs_4x7[i][0] = line[4*7]
 	}
+	return inputs_4x7, outputs_4x7
+}
 
-	column := perceptron.NewPerceptron([]int{4, 16, 8, 1}, true, perceptron.TANH)
-	column.Initialize()
-	error, iterations = column.Learn(inputs_4x7, outputs_4x7, nil, nil, 0.6, 0.1, 1000, 0.001)
-	log.Info("Learning column endend with error %f after %d iterations", error, iterations)
-	utils.Save(column, "column.json")
-
-	sixOnSeven := utils.ReadCsvToFloats(sixOnSevenFilename)
-
-	inputs_6x7 := make([][]float64, len(sixOnSeven))
-	outputs_6x7 := make([][]float64, len(sixOnSeven))
+func generateSixOnSevenBoard(column perceptron.Perceptron, sixOnSeven [][]float64) (inputs_6x7, outputs_6x7 [][]float64) {
+	inputs_6x7 = make([][]float64, len(sixOnSeven))
+	outputs_6x7 = make([][]float64, len(sixOnSeven))
 	for i, line := range sixOnSeven {
 		inputs_6x7[i] = make([]float64, 3)
 		outputs_6x7[i] = make([]float64, 1)
@@ -109,12 +122,7 @@ func build(fourOnFourFilename, fourOnSevenFilename, sixOnSevenFilename string) {
 		}
 		outputs_6x7[i][0] = line[6*7]
 	}
-
-	decider := perceptron.NewPerceptron([]int{3, 16, 8, 1}, true, perceptron.TANH)
-	decider.Initialize()
-	error, iterations = decider.Learn(inputs_6x7, outputs_6x7, nil, nil, 0.01, 0.05, 10000, 0.001)
-	log.Info("Learning decider endend with error %f after %d iterations", error, iterations)
-	utils.Save(decider, "decider.json")
+	return inputs_6x7, outputs_6x7
 }
 
 func play(board board.Board) int {
