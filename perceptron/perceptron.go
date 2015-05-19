@@ -120,24 +120,41 @@ func (p *Perceptron) Compute(input []float64) []float64 {
 	return p.outputs[p.outputLayer()]
 }
 
-func (p *Perceptron) Learn(input, ideal [][]float64, learningRate, momentum float64, iterations int, errorThreshold float64) (float64, int) {
-	globalError := 1.0
+func (p *Perceptron) Learn(input, ideal, validationInput, validationIdeal [][]float64, learningRate, momentum float64, iterations int, errorThreshold float64) (float64, int) {
 	iteration := 0
-	for iteration = 0; iteration < iterations && globalError > errorThreshold; iteration++ {
-		errorSum := 0.0
+	previousValidationSetError := p.computeRootMeanSquaredError(validationInput, validationIdeal)
+	for iteration = 0; iteration < iterations &&  p.computeRootMeanSquaredError(input, ideal) > errorThreshold; iteration++ {
 		for example := range input {
 			p.exercise(input[example], ideal[example], learningRate, momentum)
-			errorSum += MeanSquaredError(p.errors[p.outputLayer()])
 		}
-		globalError = errorSum / float64(len(input))
+		validationSetError := p.computeRootMeanSquaredError(validationInput, validationIdeal)
+		if (validationSetError > previousValidationSetError) {
+			break
+		}
+		previousValidationSetError = validationSetError
 	}
-	return globalError, iteration
+	return p.computeRootMeanSquaredError(input, ideal), iteration
 }
 
 func (p *Perceptron) exercise(input, ideal []float64, learningRate, momentum float64) {
 	p.Compute(input)
 	p.computeDeltas(ideal)
 	p.updateWeights(learningRate, momentum)
+}
+
+func (p *Perceptron) computeRootMeanSquaredError(input, ideal [][]float64) float64 {
+	error := 0.0
+	if (input == nil && ideal == nil) {
+		return error
+	}
+	for i, in := range input {
+		errors := p.Compute(in)
+		for j := range errors {
+			errors[j] -= ideal[i][j]
+		}
+		error += MeanSquaredError(errors)
+	}
+	return (error / float64(len(input)))
 }
 
 func (p *Perceptron) computeDeltas(ideal []float64) {

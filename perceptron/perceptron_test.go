@@ -32,7 +32,7 @@ func TestPerceptronOnXOR(t *testing.T) {
 
 	p := NewPerceptron([]int{2, 3, 2, 1}, false, SIGMOID)
 	p.Initialize()
-	error, iterationsWithoutBias := p.Learn(input, ideal, 0.7, 0.3, 1000, 0.0017)
+	error, iterationsWithoutBias := p.Learn(input, ideal, nil, nil, 0.7, 0.3, 1000, 0.0017)
 
 	t.Logf("After %d iterfation got %f error", iterationsWithoutBias, error)
 
@@ -47,7 +47,7 @@ func TestPerceptronOnXOR(t *testing.T) {
 
 	p = NewPerceptron([]int{2, 3, 2, 1}, true, SIGMOID)
 	p.Initialize()
-	error, iterationsWithBias := p.Learn(input, ideal, 0.7, 0.3, 1000, 0.0017)
+	error, iterationsWithBias := p.Learn(input, ideal, nil, nil, 0.7, 0.3, 1000, 0.0017)
 
 	t.Logf("After %d iterfation got %f error", iterationsWithBias, error)
 
@@ -66,7 +66,7 @@ func TestPerceptronOnXOR(t *testing.T) {
 
 	p = NewPerceptron([]int{2, 3, 2, 1}, true, TANH)
 	p.Initialize()
-	error, iterationsWithBiasAndTanh := p.Learn(input, ideal, 0.7, 0.3, 100, 0.001)
+	error, iterationsWithBiasAndTanh := p.Learn(input, ideal, nil, nil, 0.7, 0.3, 100, 0.001)
 
 	t.Logf("After %d iterfation got %f error", iterationsWithBiasAndTanh, error)
 
@@ -82,6 +82,45 @@ func TestPerceptronOnXOR(t *testing.T) {
 	if iterationsWithBiasAndTanh > iterationsWithBias {
 		t.Error("Exected biased tanh perceptron to learn faster")
 	}
+}
+
+func Test_ShouldStopVenErrorOnValidationRise(t *testing.T) {
+	input := [][]float64{
+		[]float64{-1},
+		[]float64{-0.5},
+		[]float64{0.00001}, //noise
+		[]float64{0.5},
+		[]float64{1},
+	}
+
+	ideal := [][]float64{
+		[]float64{1},
+		[]float64{0.25},
+		[]float64{0.25}, //noise
+		[]float64{0.25},
+		[]float64{1},
+	}
+
+	validationInput := [][]float64{
+		[]float64{0},
+	}
+
+	validationIdeal := [][]float64{
+		[]float64{0},
+	}
+
+	p := NewPerceptron([]int{1, 2, 2, 1}, false, SIGMOID)
+	p.Initialize()
+	ee, iterationsWithoutValidation := p.Learn(input, ideal, nil, nil, 0.7, 0.3, 1000, 0.0)
+	t.Log(ee)
+	p = NewPerceptron([]int{1, 2, 2, 1}, false, SIGMOID)
+	p.Initialize()
+	ee, iterationsWithValidation := p.Learn(input, ideal, validationInput, validationIdeal, 0.7, 0.3, 1000, 0.0)
+	t.Log(ee)
+	if (iterationsWithoutValidation > iterationsWithValidation) {
+		t.Errorf("There should be less iterations with validation %d >= %d", iterationsWithoutValidation, iterationsWithValidation)
+	}
+
 }
 
 func Test_Json_Marshaling(t *testing.T) {
@@ -108,7 +147,7 @@ func BenchmarkLearn(b *testing.B) {
 	p := NewPerceptron([]int{16, 12, 8, 4}, true, SIGMOID)
 	p.Initialize()
 	b.ResetTimer()
-	p.Learn([][]float64{randoms(16)}, [][]float64{randoms(4)}, 0.7, 0.3, b.N, 0)
+	p.Learn([][]float64{randoms(16)}, [][]float64{randoms(4)}, nil, nil, 0.7, 0.3, b.N, 0)
 }
 
 func compareFloat(expected float64, actual float64, eps float64) bool {
