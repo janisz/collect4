@@ -4,6 +4,7 @@ if (!require("genalg")) {
   library(genalg)
   library(ggplot2)
 }
+source("perceptron.r")
 
 # http://stackoverflow.com/a/25411493/1387612
 bitsToInt<-function(x) {
@@ -23,20 +24,11 @@ chromosome = c(
 )
 
 evalFunc <- function(x) {
-    x[1]
-    x[2]
-    x[3]
-
+    print(x)
     hiddenLayerSize <- bitsToInt(x[4:(4+16)])
     seed <- bitsToInt(x[(4+17):(4+17+16)])
 
-    x[4+17+17]
-    x[4+17+17+1]
-    x[4+17+17+2]
-
-    #TODO: Here we should build and train perceptron. We should return error on test set
-
-    return(hiddenLayerSize-seed)
+    return(computeRank(hiddenLayerSize, x[38:40], x[1:3], seed))
 }
 
 iter = 100
