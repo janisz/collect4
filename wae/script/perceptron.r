@@ -2,46 +2,19 @@ if (!require("neuralnet")) {
   install.packages('neuralnet', repos="http://cran.rstudio.com/")
   library(neuralnet)
 }
-if (!require("datasets")) {
-  install.packages('datasets', repos="http://cran.rstudio.com/")
-  library(datasets)
-}
 
 normalize <- function(x, maxv, minv) {
   return((x-minv)/(maxv-minv))
 }
 
 
+trainingdata <- read.csv(file="data/data_shuf_training.csv", header=F, sep=",")
+trainingdata['V17'] = normalize(trainingdata['V17'], 0, 3)
+inputSize <- 16
+outputSize <- 1
+seed <- 1
 
-computeRank <- function(hiddenLayerSize, bias, func, seed) {
-
-  traininginput <-  as.data.frame(runif(50, min=0, max=100))
-  trainingoutput <- sqrt(traininginput)
-  trainingdata <- cbind(traininginput,normalize(trainingoutput, 0, 10))
-  colnames(trainingdata) <- c("Input","Output")
-  testdata <- as.data.frame((1:10)^2)
-
-  inputSize <- 1
-  hiddenLayerSize <- 10
-  outputSize <- 1
-  bias <- c(0,1,1)
-  func <- c(0,0,1)
-  seed <- 1
-
-  #exclude bias weights
-  exclude <- NULL
-  if(bias[2] == 1) {
-    layer <- seq(from = 1, to = 1, length.out = hiddenLayerSize)
-    from <- seq(from = 1, to = 1, length.out = hiddenLayerSize)
-    to  <- seq(from = 1, to = hiddenLayerSize, length.out = hiddenLayerSize)
-    exclude <- rbind(matrix(c(layer, from, to), nrow=length(layer)), exclude)
-  }
-  if(bias[3] == 1) {
-    layer <- seq(from = 2, to = 2, length.out = outputSize)
-    from <- seq(from = 1, to = 1, length.out = outputSize)
-    to  <- seq(from = 1, to = outputSize, length.out = outputSize)
-    exclude <- rbind(matrix(c(layer, from, to), nrow=length(layer)), exclude)
-  }
+computeRank <- function(hiddenLayerSize, func, denominator) {
 
   #set acctivaton functions
   actFunc = "logistic"
@@ -55,19 +28,23 @@ computeRank <- function(hiddenLayerSize, bias, func, seed) {
 
   #set weights
   set.seed(seed)
-  weights <- rnorm((inputSize+1)*hiddenLayerSize+hiddenLayerSize*outputSize+1)
+  weights <- rnorm((inputSize+1)*hiddenLayerSize+(hiddenLayerSize+1)*outputSize) / (denominator+1)
 
   #train perceptron
   net.sqrt <- neuralnet(
-    Output~Input,
+    V17~V1+V2+V3+V4+V5+V6+V7+V8+V9+V10+V11+V12+V13+V14+V15+V16,
     trainingdata,
     threshold=0.1,
+    stepmax=1e3,
     hidden=hiddenLayerSize,
-    exclude = exclude,
     startweights = weights,
     linear.output = outputLinear,
     act.fct = actFunc
   )
-  #compute result the lower the better
-  return(net.sqrt$result.matrix['error',]*net.sqrt$result.matrix['steps',])
+  if (is.null(net.sqrt$weights)) {
+    return(1e2*(hiddenLayerSize+1))
+  }
+  #compute result, the lower the better
+  result <- net.sqrt$result.matrix['error',]*net.sqrt$result.matrix['steps',]
+  return(result)
 }
