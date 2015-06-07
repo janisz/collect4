@@ -177,9 +177,11 @@ zastosowanie zbioru elitarnego w liczbie nie większej niż dwadzieścia procent
 \subsection{Implementacja}
 Całość została zaimplementowana przy użyciu środowiska R. Perceptron zaimplementowany został
 przez bibliotekę \texttt{neurlanet}\cite{R:neuralnet}, natomiast jako schemat algorytmu genetycznego wykorzystano
-\texttt{genalg}\cite{R:genalg}
+\texttt{genalg}\cite{R:genalg}. W celu przyspieszenia działania zastosowano cachowane dostarczane przez bibliotekę
+\texttt{R.cache}\cite{R:cache}
 
 \subsection{Wyniki}
+Testy przeprowadzono ucząc perceptron, losowo wybranm zbiorem uczącym liczącym tysiąc (1000) pozycji.	
 
 %
 % ---- Bibliography ----
@@ -207,6 +209,12 @@ IEEE INTERNATIONAL CONFERENCE ON NEURAL NETWORKS, 1993,586--591
 \url{https://github.com/egonw/genalg}
 \bibitem{R:neuralnet}
 \url{http://cran.r-project.org/web/packages/neuralnet/}
+\bibitem{R:cache}
+Bengtsson, H. The R.oo package
+\textsl{Object-Oriented Programming with References Using}
+Standard R Code, Proceedings of the 3rd International Workshop on Distributed
+Statistical Computing (DSC 2003), ISSN 1609-395X, Hornik, K.; Leisch, F. \& Zeileis,
+A. (ed.), 2003
 \end{thebibliography}
 
 \end{document}

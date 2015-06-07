@@ -14,8 +14,10 @@ inputSize <- 16
 outputSize <- 1
 seed <- 1
 
-computeRank <- function(hiddenLayerSize, func, denominator) {
-
+computeRank <- function(chromosome) {
+  hiddenLayerSize <- bitsToInt(chromosome[4:(4+8)])
+  denominator <- bitsToInt(chromosome[12:20])
+  func <- chromosome[1:3]
   #set acctivaton functions
   actFunc = "logistic"
   if (func[1] == func[2]) {

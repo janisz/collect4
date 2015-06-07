@@ -1,8 +1,10 @@
 if (!require("genalg")) {
   install.packages("genalg", repos="http://cran.rstudio.com/")
   install.packages("ggplot2", repos="http://cran.rstudio.com/")
+  install.packages("R.cache", repos="http://cran.rstudio.com/")
   library(genalg)
   library(ggplot2)
+  library(R.cache)
 }
 source("script/perceptron.r")
 
@@ -23,13 +25,11 @@ chromosome = c(
 
 evalFunc <- function(x) {
     print(x)
-    hiddenLayerSize <- bitsToInt(x[4:(4+8)])
-    denominator <- bitsToInt(x[12:20])
-    return(computeRank(hiddenLayerSize, x[1:3], denominator))
+    return(R.cache::evalWithMemoization(computeRank(x), key=x))
 }
 
-iter = 1
-GAmodel <- rbga.bin(size = 20, popSize = 5, iters = iter, mutationChance = 0.0001,
+iter = 100
+GAmodel <- rbga.bin(size = 20, popSize = 100, iters = iter, mutationChance = 0.0001,
     elitism = T, evalFunc = evalFunc)
 cat(summary(GAmodel))
 warnings()
