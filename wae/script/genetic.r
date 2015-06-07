@@ -6,6 +6,11 @@ if (!require("genalg")) {
   library(ggplot2)
   library(R.cache)
 }
+if (!require("R.cache")) {
+  install.packages("R.cache", repos="http://cran.rstudio.com/")
+  library(R.cache)
+}
+
 source("script/perceptron.r")
 
 # http://stackoverflow.com/a/25411493/1387612
