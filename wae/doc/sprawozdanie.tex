@@ -14,7 +14,11 @@
 \usepackage[polish]{babel}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{hyperref}
-\usepackage{subfig}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+
 
 \begin{document}
 
@@ -181,7 +185,137 @@ przez bibliotekę \texttt{neurlanet}\cite{R:neuralnet}, natomiast jako schemat a
 \texttt{R.cache}\cite{R:cache}
 
 \subsection{Wyniki}
-Testy przeprowadzono ucząc perceptron, losowo wybranm zbiorem uczącym liczącym tysiąc (1000) pozycji.	
+Testy przeprowadzono na następujących danych
+
+\begin{table}[H]
+\caption{Konfiguracja testowa}
+\label{small}
+\centering
+\begin{tabular}{|c|c|}
+  Type                  & binary chromosome \\
+  Population size       & 10 \\
+  Number of Generations & 10 \\
+  Elitism               & 0.2 \\
+  Mutation Chance       & 0.0001 \\
+  Best Solution & \texttt{0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 0 0 1 0} \\
+  Score & 7.681257691 \\
+\end{tabular} 
+
+\end{table}
+
+\begin{table}[H]
+\caption{Konfiguracja testowa}
+\label{mid}
+\centering
+\begin{tabular}{|c|c|}
+  Type                  & binary chromosome \\
+  Population size       & 100 \\
+  Number of Generations & 100 \\
+  Elitism               & 0.2 \\
+  Mutation Chance       & 0.0001 \\
+  Best Solution & \texttt{0 0 0 0 0 0 1 1 0 1 1 0 0 0 0 0 0 0 0 0} \\
+  Score & 0.5881324831 \\
+\end{tabular} 
+
+\end{table}
+
+\begin{table}[H]
+\caption{Konfiguracja testowa}
+\label{big}
+\centering
+\begin{tabular}{|c|c|}
+  Type                  & binary chromosome \\
+  Population size       & 300 \\ 
+  Number of Generations & 200 \\
+  Elitism               & 0.2 \\
+  Mutation Chance       & 0.0001 \\
+  Best Solution & \texttt{0 0 0 0 0 0 1 1 0 1 1 0 0 0 0 0 0 0 0 0} \\
+  Score & 0.5881324831 \\
+\end{tabular} 
+
+\end{table}
+  
+\begin{figure}[H]
+        \centering
+        \begin{subfigure}[b]{0.5\textwidth}
+                \includegraphics[width=\textwidth]{img/hist_small}
+                \caption{Histogram}
+                \label{fig:gull}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.5\textwidth}
+                \includegraphics[width=\textwidth]{img/plot_small}
+                \caption{Wynik funkcji ewaluacji}
+                \label{fig:tiger}
+        \end{subfigure}
+        \caption{Wyniki dla konfiguracji \ref{small}}
+        \label{fig:small}
+\end{figure}
+
+\begin{figure}[H]
+        \centering
+        \begin{subfigure}[b]{0.5\textwidth}
+                \includegraphics[width=\textwidth]{img/hist}
+                \caption{Histogram}
+                \label{fig:gull}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.5\textwidth}
+                \includegraphics[width=\textwidth]{img/plot}
+                \caption{Wynik funkcji ewaluacji}
+                \label{fig:tiger}
+        \end{subfigure}
+        \caption{Wyniki dla konfiguracji \ref{mid}}
+        \label{fig:small}
+\end{figure}
+
+\begin{figure}[H]
+        \centering
+        \begin{subfigure}[b]{0.5\textwidth}
+                \includegraphics[width=\textwidth]{img/hist_big}
+                \caption{Histogram}
+                \label{fig:gull}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.5\textwidth}
+                \includegraphics[width=\textwidth]{img/plot_big}
+                \caption{Wynik funkcji ewaluacji}
+                \label{fig:tiger}
+        \end{subfigure}
+        \caption{Wyniki dla konfiguracji \ref{big}}
+        \label{fig:small}
+\end{figure}
+
+Niespodziewanie algorytm bardzo szybko zbiega do stabilnego rozwiązania przy dość małej
+generacji początkowej. Nie zaobserwowano ochyleń. Wyłoniona konfiguracja to 
+\begin{table}[H]
+\caption{Najlepszy osobnik}
+\label{the_choosen_one}
+\centering
+\begin{tabular}{|c|c|}
+  Activation function                  & tanh \\
+  Hidden Layer Size       & 216 \\ 
+  Denominator & 1 \\
+  Linear Output               & TRUE \\
+\end{tabular} 
+\end{table}
+
+\subsection{Wnioski}
+Dosyć duży rozmiar warstwy ukrytej pozwala sądzić, że algorytm dobrał
+maksymalny możliwy rozmiar który daje się nauczyć przy ograniczonej liczbie 
+iteracji. Perceptron zamiast uogulniać wiedzę stara się nauczyć każdego przypadku
+oddzielnie. Prawdopodobnie przy zwiększeniu dopuszczalnej liczby iteracji
+liczba neuronów warstwy ukrytej również by wzrosła.
+
+W dalszych badaniach funkcja oceny powinna zostać rozszerzona o czynnik
+przeciwdziałający nadmiernemu wzrostowi sieci (np. obecnie stosowana funkcja
+mogła by być mnożona przez liczbę neuronów).
+
+Inne prace wykazały małą przydatność perceptronów w problemie gry w \emph{connect4}.
+
 
 %
 % ---- Bibliography ----

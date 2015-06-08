@@ -50,3 +50,5 @@ computeRank <- function(chromosome) {
   result <- net.sqrt$result.matrix['error',]*net.sqrt$result.matrix['steps',]
   return(result)
 }
+
+c(0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0)
