@@ -145,11 +145,11 @@ Na podstawie doświadczeń z prototypem podjęto decyzję o następujących isto
 Z uwagi na wolną zbieżność i konieczność definiowania ścisłych współcznynników nauki w algorytmie propagacji wstecznej
 zdecydowano się na użycie algorytmu \texttt{rprop+}\cite{Riedmiller93adirect}
 \subsubsection{Genotyp}
-Orginalny fenotyp był dość rozbudowany. Zmiany w pojedynczym elemencie często powodowały katastrofalne skutki.
+Orginalny genotyp był dość rozbudowany. Zmiany w pojedynczym elemencie często powodowały katastrofalne skutki.
 W szczególności element odpowiedzialny za losowy dobór wag zachowywał się w sposób losowy, jego małe zmiany
 często oznaczały gigantyczne zmiany w wynikach ewaluacji. W ostatecznej wersji zamieniono ten element na 
 wartość skalującą raz ustalony wektor wag.
-Z uwagi na łatwość implementacji zdecydowano się na użycie binarnej reprezentacji fenotypu. 
+Z uwagi na łatwość implementacji zdecydowano się na użycie binarnej reprezentacji genotypu. 
 Ponadto zrezygnowano z opcjonalności stosowania \emph{bias} gdyż jego brak zazwyczaj
 powoduje wydłużenie procesu uczenia.
 \begin{itemize}
