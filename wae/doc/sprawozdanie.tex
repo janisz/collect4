@@ -142,19 +142,19 @@ Na podstawie doświadczeń z prototypem podjęto decyzję o następujących isto
 
 \subsection{Istotne zmiany w stosunku do specyfikacji}
 \subsubsection{Algorytm uczenia}
-Z uwagi na wolną zbierzność i konieczność definiowania ścisłych współcznynników nauki w algorytmie propagacji wstecznej
+Z uwagi na wolną zbieżność i konieczność definiowania ścisłych współcznynników nauki w algorytmie propagacji wstecznej
 zdecydowano się na użycie algorytmu \texttt{rprop+}\cite{Riedmiller93adirect}
 \subsubsection{Genotyp}
 Orginalny fenotyp był dość rozbudowany. Zmiany w pojedynczym elemencie często powodowały katastrofalne skutki.
 W szczególności element odpowiedzialny za losowy dobór wag zachowywał się w sposób losowy, jego małe zmiany
-często oznaczały gigantyczne zmiany w wyniki ewaluacji. W ostatecznej wersji zamieniono ten element na 
+często oznaczały gigantyczne zmiany w wynikach ewaluacji. W ostatecznej wersji zamieniono ten element na 
 wartość skalującą raz ustalony wektor wag.
 Z uwagi na łatwość implementacji zdecydowano się na użycie binarnej reprezentacji fenotypu. 
 Ponadto zrezygnowano z opcjonalności stosowania \emph{bias} gdyż jego brak zazwyczaj
 powoduje wydłużenie procesu uczenia.
 \begin{itemize}
-	\item funkcja aktywacji -- 3 elementowy wektor binarny określający funkcje aktywacji. Jeśli pierwszy (1) i 
-	drugi (2) element są równe to używana jest \emph{tangens hiperboliczny} w przeciwnym wypadku funkcja sigmoidalna.
+	\item funkcja aktywacji -- 3 elementowy wektor binarny określający funkcję aktywacji. Jeśli pierwszy (1) i 
+	drugi (2) element są równe to używana jest \emph{tangens hiperboliczny} w przeciwnym wypadku funkcja \emph{sigmoidalna}.
 	Trzeci element opowiada za stosowanie bądź nie liniowej transformacji na wyjściu.
 	\item liczba neuronów w warstwie ukrytej -- dodatnia liczba całkowita
 	\item wektor wag -- dodatnia liczba całkowita określająca skalowanie wylosowanego wektora wag.
@@ -170,7 +170,7 @@ Z uwagi na zastosowanie binarnej reprezentacji chromosomu, mutacje dotyczą cał
 a nie tylko wybranych części.
 
 \subsubsection{Funkcja przystosowania}
-W celu skrócenia czasu eksperymentu, zdecydowano na ustalenie progu po którym nauka zostanie przerwana.
+W celu skrócenia czasu eksperymentu, zdecydowano na ustalenie progu, po którym nauka zostanie przerwana.
 W związku z tym funkcja przystosowania zwraca wartość, która jest iloczynem
 liczby wykonanych iteracji oraz sumarycznego błędu na zbiorze uczącym.
 
@@ -180,8 +180,8 @@ zastosowanie zbioru elitarnego w liczbie nie większej niż dwadzieścia procent
 
 \subsection{Implementacja}
 Całość została zaimplementowana przy użyciu środowiska R. Perceptron zaimplementowany został
-przez bibliotekę \texttt{neurlanet}\cite{R:neuralnet}, natomiast jako schemat algorytmu genetycznego wykorzystano
-\texttt{genalg}\cite{R:genalg}. W celu przyspieszenia działania zastosowano cachowane dostarczane przez bibliotekę
+z użyciem biblioteki \texttt{neurlanet}\cite{R:neuralnet}, natomiast jako schemat algorytmu genetycznego wykorzystano
+\texttt{genalg}\cite{R:genalg}. W celu przyspieszenia działania zastosowano cachowanie dostarczane przez bibliotekę
 \texttt{R.cache}\cite{R:cache}
 
 \subsection{Wyniki}
@@ -306,7 +306,7 @@ generacji początkowej. Nie zaobserwowano ochyleń. Wyłoniona konfiguracja to
 \subsection{Wnioski}
 Dosyć duży rozmiar warstwy ukrytej pozwala sądzić, że algorytm dobrał
 maksymalny możliwy rozmiar który daje się nauczyć przy ograniczonej liczbie 
-iteracji. Perceptron zamiast uogulniać wiedzę stara się nauczyć każdego przypadku
+iteracji. Perceptron zamiast uogólniać wiedzę stara się nauczyć każdego przypadku
 oddzielnie. Prawdopodobnie przy zwiększeniu dopuszczalnej liczby iteracji
 liczba neuronów warstwy ukrytej również by wzrosła.
 
