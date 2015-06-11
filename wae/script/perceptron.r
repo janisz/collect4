@@ -12,7 +12,7 @@ trainingdata <- read.csv(file="data/data_shuf_training.csv", header=F, sep=",")
 trainingdata['V17'] = normalize(trainingdata['V17'], 0, 3)
 inputSize <- 16
 outputSize <- 1
-seed <- 1
+weights_const <- rnorm((inputSize+1)*2^10+(2^10+1)*outputSize)
 
 computeRank <- function(chromosome) {
   hiddenLayerSize <- bitsToInt(chromosome[4:(4+8)])
@@ -29,8 +29,7 @@ computeRank <- function(chromosome) {
   }
 
   #set weights
-  set.seed(seed)
-  weights <- rnorm((inputSize+1)*hiddenLayerSize+(hiddenLayerSize+1)*outputSize) / (denominator+1)
+  weights <- weights_const[1:(inputSize+1)*hiddenLayerSize+(hiddenLayerSize+1)*outputSize] / (denominator+1)
 
   #train perceptron
   net.sqrt <- neuralnet(
