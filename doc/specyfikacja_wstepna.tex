@@ -73,15 +73,16 @@ intuitive playing, human-like problem solving, example-based learning, Connect F
 %
 \section{Wstęp}
 Celem projektu było stworzenie rozwiązania znajdującego optymalny ruch (bądź jego przybliżenie) w grze Connect Four (\emph{pol. Czwórki}) \cite{connect4:wiki} na podstawie obrazu planszy, bez przeszukiwania drzewa gry. 
-W trakcie trawania projektu przetestowane dwa różne modele
-\begin{itemize}
-	\item kombinację wielu perceptronów
-	\item sieć Kohonnena uczoną z nadzorem
-\end{itemize}
+W trakcie trawania projektu przetestowano dwa różne modele
+\begin{enumerate}
+	\item konwolucyjną sieć neuronową złożona z wielu perceptronów
+	\item sieć Kohonena uczoną z nadzorem
+\end{enumerate}
 
 \section{Model perceptronowy}
 
 \subsection{Reprezentacja planszy}
+\label{sec:reprezentacja}
 Aby wykorzystać lokalność kontekstu gry, plansza do gry podzielona będzie na nachodzące na siebie sektory - kwadraty $4 \times 4$ (jak na \autoref{fig:C4Podzial}). 
 Każdy z kwadratów reprezentowany będzie jako wektor szesnastu liczb $\{-1, 0, 1\}$, gdzie:
 \begin{description}
@@ -108,8 +109,8 @@ Wartości odpowiadające polom w sektorze ustawione będą kolejno jak na \autor
 \subsection{Opis sieci}
 Wejście sieci składało się z $16 \times 16$ neuronów - po jednym neuronie na każde z $16$ pól w każdym z $16$ sektorów. Części odpowiadające kolejnym sektorom miały związane odpowiednie wagi (np. waga odpowiadająca polu nr 1 w sektorze I związana z wagą pola nr 1 w sektorze nr III). Kolejna warstwa składała się z $4 \times 16$ neuronów - po jednym na każdą kolumnę każdego z sektorów.
 Wyjście tej warstwy złożnoe z $4 \times 4$ neuronów, odpowiadającym kolumną planszy w każdej \emph{kolumnie sektorów}. Podobnie jak w przypadku 
-poprzednije warstwy, poszczególne elementy odpowiadające kolumną sektorów miały związane wagi.
-Wyjście sieci składało się będzie z siedmiu neuronów odpowiadającym kolumnom na planszy. Największa wartość oznacza numer kolumny w następnym ruchu.
+poprzedniej warstwy, poszczególne elementy odpowiadające kolumną sektorów miały związane wagi.
+Wyjście sieci składało się będzie z siedmiu neuronów odpowiadających kolumnom na planszy. Największa wartość oznacza numer kolumny w następnym ruchu.
 Wszystkie połączenia pomiędzy warstwami jak na \autoref{fig:Siec}
 
 \begin{figure}[H]
@@ -122,24 +123,24 @@ Wszystkie połączenia pomiędzy warstwami jak na \autoref{fig:Siec}
 Sieć będzie uczona za pomocą algorytmu propagacji wstecznej. Dane treningowe wygenerowane zostaną za pomocą programu Velena\cite{velena} wykonującego perfekcycjne ruchy.
 
 \subsection{Wyniki}
-Otrzymane rezultaty nie były zadowalające. Skuteczność nauku ruchu wynosiła około $20\%$ (zupełnie losow ruchy dają skuteczność na poziomie $18\%$).
+Otrzymane rezultaty nie były zadowalające. Skuteczność przewidywania liczona jako procent ruchów równych tym przewidzianym przez Velenę wynosiła około $20\%$ (zupełnie losowe ruchy dają skuteczność na poziomie $18\%$).
 
-\section{Model Kohonnena}
+\section{Model Kohonena}
 
 \subsection{Opis modelu}
-W drugim podejściu postaniowiono użyć zmodyfikowanej sieci Kohonnenna. Sieć kohonena pozwala na zdyskretyzowanie przestrzeni wejściowej i jest uczona bez nadzoru.
-W nimniejszej pracy zastosowana jednak uczenia nadzorowane tak aby sieć zamieniała konkretny obraz planszy na jeden z możliwych ruchów.
+W drugim podejściu postaniowiono użyć zmodyfikowanej sieci Kohonena. Sieć Kohonena pozwala na zdyskretyzowanie przestrzeni wejściowej i jest uczona bez nadzoru.
+W niniejszej pracy rozszerzono model o uczenie nadzorowane tak aby sieć zamieniała konkretny obraz planszy na jeden z możliwych ruchów.
 
 \subsection{Opis wejścia}
-Na wejściu znajduje sie wektor o rozmiarze $6\times 7$ elementów reprezentujący stan planszy. Kodowanie jest identyczne jak w poprzednim modelu.
+Na wejściu znajduje sie wektor o rozmiarze $6\times 7$ elementów reprezentujący stan planszy. Kodowanie jest identyczne jak w poprzednim modelu (\autoref{sec:reprezentacja}).
 
 \subsection{Opis sieci}
-Sieć jest zbudowana z $6$ neuronów, z któych każdy jest połączony wagami z każdym elementem wektora wejściowego. 
+Sieć jest zbudowana z $6$ neuronów, z których każdy jest połączony wagami z każdym elementem wektora wejściowego. 
 Każdy neuron ustala swoje wagi. Wyjściem sieci jest indeks neuronu który zwrócił najwyższy wynik.
 
 \subsection{Algorytm uczenia}
-Skorzystano z algorytmu uczenia z nadzorem. Wagi każdego z neuronów, są zawsze znormalizowane podobnie jak wektor wejściowy.
-Uczenie polega na zmianie wag neuronu, którego indeks jest porządanym ruchem tak aby jego wyniki był największy, w myśl zasady
+Skorzystano z algorytmu uczenia z nadzorem. Wagi każdego z neuronów są zawsze znormalizowane podobnie jak wektor wejściowy.
+Uczenie polega na zmianie wag neuronu, którego indeks jest porządanym ruchem tak, aby jego wynik był największy, w myśl zasady
 zwycięzca bierze wszystko.
 
 
@@ -167,7 +168,7 @@ function normalized = normalize(x)
   normalized(!isfinite(normalized))=0;
 end
 \end{lstlisting}
-W powyższym algorytmie na wyniku uczenia ma wpływ zmienna \texttt{RATE}, która określa jak duże zmiany są nakładane na wagi.
+W powyższym algorytmie na wynik uczenia wpływ ma zmienna \texttt{RATE}, która określa jak duże zmiany są nakładane na wagi.
 
 \subsection{Wyniki}
 Dziłanie algorytmu zostało przetestowane dla różnych wartości parametru \texttt{RATE}. Próbę przeprowadzono na 
@@ -179,9 +180,9 @@ losowo wybranych planszach. Zbiory treningowy i testowy miały rozmiar $150~tys$
 	\label{fig:Siec}
 \end{figure}
 
-Ciekawym zjawiskiem jest pojawienie artefaktu, w okolicach którego skuteconość bardzo gwałtownie się zmienia.
+Ciekawym zjawiskiem jest pojawienie artefaktu, w okolicach którego skuteczność bardzo gwałtownie się zmienia.
 Występuje on zarówno dla danych testowych jaki i treningowych.
-Otrzymywane wyniki zbiegają do około $40\%$.
+Otrzymywana skuteczność to około $40\%$.
 
 
 
